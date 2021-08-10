@@ -1,8 +1,15 @@
 <template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view>
-			<text class="title">{{ title }}</text>
+	<view class="index-wrap">
+		<image
+			class="title-image"
+			src="/static/images/background_index.jpg"
+			mode="aspectFill"
+			fade-show="false"
+			draggable="false"
+		></image>
+		<view class="index-container">
+			<text class="welcome">欢迎回来，{{ username }}！</text>
+			<van-tag type="success">管理员</van-tag>
 		</view>
 	</view>
 </template>
@@ -11,7 +18,7 @@
 export default {
 	data() {
 		return {
-			title: "Hello"
+			username: "李立强"
 		};
 	},
 	onLoad() {},
@@ -20,20 +27,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+.index-wrap {
+	position: relative;
 
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin: 200rpx auto 50rpx auto;
+	.title-image {
+		position: absolute;
+		z-index: 2;
+		top: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 369rpx;
 	}
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
+	.index-container {
+		position: relative;
+		z-index: 5;
+		padding: 129rpx 30rpx 0 30rpx;
+
+		.welcome {
+			font-size: 40rpx;
+			color: #ffffff;
+		}
 	}
 }
 </style>
