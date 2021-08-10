@@ -1,48 +1,71 @@
 {
-	"easycom": {
-		"autoscan": true,
-		"custom": {
-			"^uni-((?!(shadow-root)).*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^uni-((?!(shadow-root)).*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
       "van-(.*)": "@/wxcomponents/vant/$1/index.vue"
-		}
-	},
-	"pages": [
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "首页"
-			}
-		},
-		{
-			"path": "pages/order/order",
-			"style": {
-				"navigationBarTitleText": "order"
-			}
-		},
+    }
+  },
+  "pages": [
     {
-			"path": "pages/test/new_file",
-			"style": {
-				"navigationBarTitleText": "order"
-			}
-		}
-	],
-	"tabBar": {
-		"color": "#7A7E83",
-		"selectedColor": "#3cc51f",
-		"borderStyle": "black",
-		"backgroundColor": "#ffffff",
-		"list": [
-			{
-				"pagePath": "pages/index/index",
-				"text": "组件"
-			},
-			{
-				"pagePath": "pages/test/new_file",
-				"text": "接口"
-			}
-		]
-	},
-	"globalStyle": {
-		"navigationStyle": "custom"
-	}
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/order/order",
+      "style": {
+        "navigationBarTitleText": "order"
+      }
+    },
+    {
+      "path": "pages/work/work",
+      "style": {
+        "navigationBarTitleText": "work"
+      }
+    },
+    {
+      "path": "pages/test/new_file",
+      "style": {
+        "navigationBarTitleText": "order"
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#949494",
+    "selectedColor": "#268dfb",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "fontSize": "14px",
+    "iconWidth": "20px",
+    "height": "60px",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "组件",
+        "iconPath": "static/icon/tabbar/icon_index_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_index_on.png"
+      },
+      {
+        "pagePath": "pages/order/order",
+        "text": "订单",
+        "iconPath": "static/icon/tabbar/icon_order_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_order_on.png"
+      },
+      {
+        "pagePath": "pages/work/work",
+        "text": "工单",
+        "iconPath": "static/icon/tabbar/icon_scan_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_scan_on.png"
+      },
+      {
+        "pagePath": "pages/test/new_file",
+        "text": "我的",
+        "iconPath": "static/icon/tabbar/icon_user_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_user_on.png"
+      }
+    ]
+  },
+  "globalStyle": {}
 }
