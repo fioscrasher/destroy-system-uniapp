@@ -44,12 +44,38 @@
 			<view class="icon-wrap">
 				<subtitle text="工单功能"></subtitle>
 				<view class="icon-panel">
-					<view class="icon-item">
-						<view class="icon" >
-							<image src="/static/icon/index/icon_work.png" mode="aspectFit" />
-						</view>
-						<text class="text">工单管理</text>
-					</view>
+					<template v-for="item in workPanel">
+						<navigator class="icon-item" :url="item.url" hover-class="active">
+							<view class="icon" :style="{ background: item.color }">
+								<image :src="item.icon" mode="aspectFit" />
+							</view>
+							<text class="text">{{ item.name }}</text>
+						</navigator>
+					</template>
+				</view>
+			</view>
+			<view class="position-wrap">
+				<navigator>
+					<text>GPS轨迹监控</text>
+				</navigator>
+				<van-switch
+					:checked="gpsSwitch"
+					active-color="#07c160"
+					@change="gpsSwitchChange"
+					size="36rpx"
+				/>
+			</view>
+			<view class="icon-wrap">
+				<subtitle text="其他功能"></subtitle>
+				<view class="icon-panel">
+					<template v-for="item in otherPanel">
+						<navigator class="icon-item" :url="item.url" hover-class="active">
+							<view class="icon" :style="{ background: item.color }">
+								<image :src="item.icon" mode="aspectFit" />
+							</view>
+							<text class="text">{{ item.name }}</text>
+						</navigator>
+					</template>
 				</view>
 			</view>
 		</view>
@@ -65,11 +91,75 @@ export default {
 	},
 	data() {
 		return {
-			username: "李立强"
+			username: "李立强",
+			workPanel: [
+				{
+					name: "工单管理",
+					icon: "/static/icon/index/icon_work.png",
+					color: "#3f9afb",
+					url: ""
+				},
+				{
+					name: "打包管理",
+					icon: "/static/icon/index/icon_work.png",
+					color: "#fe735c",
+					url: ""
+				},
+				{
+					name: "出入库管理",
+					icon: "/static/icon/index/icon_storage.png",
+					color: "#ff8c12",
+					url: ""
+				},
+				{
+					name: "流程审批",
+					icon: "/static/icon/index/icon_approve.png",
+					color: "#16ae7d",
+					url: ""
+				},
+				{
+					name: "工单回访",
+					icon: "/static/icon/index/icon_feedback.png",
+					color: "#ff8c12",
+					url: ""
+				},
+				{
+					name: "二维码",
+					icon: "/static/icon/index/icon_qrcode.png",
+					color: "#16ae7d",
+					url: ""
+				}
+			],
+			gpsSwitch: false,
+			otherPanel: [
+				{
+					name: "订单管理",
+					icon: "/static/icon/index/icon_order.png",
+					color: "#3f9afb",
+					url: ""
+				},
+				{
+					name: "销毁证明",
+					icon: "/static/icon/index/icon_report.png",
+					color: "#fe735c",
+					url: ""
+				},
+				{
+					name: "视频管理",
+					icon: "/static/icon/index/icon_video.png",
+					color: "#ff8c12",
+					url: ""
+				}
+			]
 		};
 	},
 	onLoad() {},
-	methods: {}
+	methods: {
+		gpsSwitchChange({ detail }) {
+			console.log(detail);
+			this.gpsSwitch = detail;
+		}
+	}
 };
 </script>
 
@@ -127,6 +217,7 @@ export default {
 			background-color: #ffffff;
 			border-radius: 18rpx;
 			box-shadow: 0 0 10rpx #cccccc;
+			overflow: hidden;
 			.icon-panel {
 				display: flex;
 				flex-wrap: wrap;
@@ -137,15 +228,18 @@ export default {
 					flex-direction: column;
 					align-items: center;
 					justify-content: center;
+					&:active {
+						background: #eeeeee;
+					}
 					.icon {
 						width: 80rpx;
 						height: 80rpx;
-						background-color: red;
+						background: #cccccc;
 						display: flex;
 						align-items: center;
 						justify-content: center;
 						border-radius: 12rpx;
-            margin-bottom: 14rpx;
+						margin-bottom: 14rpx;
 						image {
 							width: 36rpx;
 							height: 36rpx;
@@ -157,6 +251,23 @@ export default {
 					}
 				}
 			}
+		}
+
+		.position-wrap {
+			margin-top: 20rpx;
+			width: 100%;
+			background-color: #268efb;
+			height: 88rpx;
+			border-radius: 18rpx;
+			box-shadow: 0 0 10rpx #268efb;
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			color: #ffffff;
+			font-size: 24rpx;
+			box-sizing: border-box;
+			padding: 0 30rpx;
 		}
 	}
 }
