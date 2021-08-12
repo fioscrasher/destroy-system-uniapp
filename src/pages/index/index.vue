@@ -10,42 +10,47 @@
 		<view class="index-container">
 			<view class="welcome">
 				<text class="text">欢迎回来，{{ username }}！</text>
-				<van-tag type="success">管理员</van-tag>
+				<tui-tag type="green" scaleMultiple="0.8">管理员</tui-tag>
 			</view>
 			<view class="overview-wrap">
 				<subtitle text="七日订单情况"></subtitle>
-				<van-row>
-					<van-col span="6">
+				<uni-row>
+					<uni-col :span="6">
 						<view class="content">
 							<text class="value">2</text>
 							<text class="desc">未接单</text>
 						</view>
-					</van-col>
-					<van-col span="6">
+					</uni-col>
+					<uni-col :span="6">
 						<view class="content">
 							<text class="value">3</text>
 							<text class="desc">已接单</text>
 						</view>
-					</van-col>
-					<van-col span="6">
+					</uni-col>
+					<uni-col :span="6">
 						<view class="content">
 							<text class="value">38</text>
 							<text class="desc">已完成</text>
 						</view>
-					</van-col>
-					<van-col span="6">
+					</uni-col>
+					<uni-col :span="6">
 						<view class="content">
 							<text class="value">6</text>
 							<text class="desc">已取消</text>
 						</view>
-					</van-col>
-				</van-row>
+					</uni-col>
+				</uni-row>
 			</view>
 			<view class="icon-wrap">
 				<subtitle text="工单功能"></subtitle>
 				<view class="icon-panel">
 					<template v-for="item in workPanel">
-						<navigator class="icon-item" :url="item.url" hover-class="active">
+						<navigator
+							class="icon-item"
+							:url="item.url"
+							hover-class="active"
+							:open-type="item.type || 'navigate'"
+						>
 							<view class="icon" :style="{ background: item.color }">
 								<image :src="item.icon" mode="aspectFit" />
 							</view>
@@ -58,18 +63,18 @@
 				<navigator>
 					<text>GPS轨迹监控</text>
 				</navigator>
-				<van-switch
-					:checked="gpsSwitch"
-					active-color="#07c160"
-					@change="gpsSwitchChange"
-					size="36rpx"
-				/>
+        <!-- <tui-switch @change="gpsSwitchChange"></tui-switch> -->
 			</view>
 			<view class="icon-wrap">
 				<subtitle text="其他功能"></subtitle>
 				<view class="icon-panel">
 					<template v-for="item in otherPanel">
-						<navigator class="icon-item" :url="item.url" hover-class="active">
+						<navigator
+							class="icon-item"
+							:url="item.url"
+							hover-class="active"
+							:open-type="item.type || 'navigate'"
+						>
 							<view class="icon" :style="{ background: item.color }">
 								<image :src="item.icon" mode="aspectFit" />
 							</view>
@@ -97,7 +102,8 @@ export default {
 					name: "工单管理",
 					icon: "/static/icon/index/icon_work.png",
 					color: "#3f9afb",
-					url: ""
+					url: "/pages/work/work",
+					type: "switchTab"
 				},
 				{
 					name: "打包管理",
@@ -136,7 +142,8 @@ export default {
 					name: "订单管理",
 					icon: "/static/icon/index/icon_order.png",
 					color: "#3f9afb",
-					url: ""
+					url: "/pages/order/order",
+					type: "switchTab"
 				},
 				{
 					name: "销毁证明",
@@ -181,6 +188,8 @@ export default {
 		z-index: 5;
 		padding: 129rpx 30rpx 0 30rpx;
 		.welcome {
+			display: flex;
+
 			.text {
 				font-size: 40rpx;
 				color: #ffffff;
