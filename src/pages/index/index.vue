@@ -67,7 +67,7 @@
 					class="position-switch"
           :checked="gpsSwitch"
 					@change="gpsSwitchChange"
-					color="#16ae7d"
+					color="green"
 				/>
 			</view>
 			<view class="icon-wrap">
@@ -178,6 +178,9 @@ export default {
 <style lang="scss" scoped>
 .index-wrap {
 	position: relative;
+  background-color: #fff;
+  box-shadow: 0 0 5px #ccc;
+  padding-bottom: 40rpx;
 
 	.title-image {
 		position: absolute;
