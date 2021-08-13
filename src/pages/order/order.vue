@@ -1,18 +1,24 @@
 <template>
-	<div class="order">
-		
-	</div>
+	<view class="order-wrap">
+		<uni-search-bar
+			@confirm="handleSearch"
+			v-model="searchValue"
+      placeholder="搜索订单编号或者客户名称"
+		></uni-search-bar>
+	</view>
 </template>
 
 <script>
 export default {
 	components: {},
 	data: () => ({
-		
+		searchValue: ""
 	}),
 	computed: {},
 	methods: {
-
+		handleSearch(e) {
+			console.log(e);
+		}
 	},
 	watch: {},
 

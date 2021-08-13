@@ -10,7 +10,7 @@
 		<view class="index-container">
 			<view class="welcome">
 				<text class="text">欢迎回来，{{ username }}！</text>
-				<tui-tag type="green" scaleMultiple="0.8">管理员</tui-tag>
+				<tui-tag type="green" :scaleMultiple="0.8">管理员</tui-tag>
 			</view>
 			<view class="overview-wrap">
 				<subtitle text="七日订单情况"></subtitle>
@@ -63,7 +63,12 @@
 				<navigator>
 					<text>GPS轨迹监控</text>
 				</navigator>
-        <!-- <tui-switch @change="gpsSwitchChange"></tui-switch> -->
+				<switch
+					class="position-switch"
+          :checked="gpsSwitch"
+					@change="gpsSwitchChange"
+					color="#16ae7d"
+				/>
 			</view>
 			<view class="icon-wrap">
 				<subtitle text="其他功能"></subtitle>
@@ -164,7 +169,7 @@ export default {
 	methods: {
 		gpsSwitchChange({ detail }) {
 			console.log(detail);
-			this.gpsSwitch = detail;
+			this.gpsSwitch = detail.value;
 		}
 	}
 };
@@ -277,6 +282,9 @@ export default {
 			font-size: 24rpx;
 			box-sizing: border-box;
 			padding: 0 30rpx;
+			.position-switch {
+				transform: scale(0.8);
+			}
 		}
 	}
 }

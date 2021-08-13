@@ -43,7 +43,7 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "组件",
+        "text": "首页",
         "iconPath": "static/icon/tabbar/icon_index_off.png",
         "selectedIconPath": "static/icon/tabbar/icon_index_on.png"
       },
