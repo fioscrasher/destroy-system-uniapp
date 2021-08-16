@@ -65,7 +65,7 @@
 				</navigator>
 				<switch
 					class="position-switch"
-          :checked="gpsSwitch"
+					:checked="gpsSwitch"
 					@change="gpsSwitchChange"
 					color="green"
 				/>
@@ -138,7 +138,7 @@ export default {
 					name: "二维码",
 					icon: "/static/icon/index/icon_qrcode.png",
 					color: "#16ae7d",
-					url: ""
+					url: "/pages/login/login"
 				}
 			],
 			gpsSwitch: false,
@@ -178,9 +178,9 @@ export default {
 <style lang="scss" scoped>
 .index-wrap {
 	position: relative;
-  background-color: #fff;
-  box-shadow: 0 0 5px #ccc;
-  padding-bottom: 40rpx;
+	background-color: #fff;
+	box-shadow: 0 0 5px #ccc;
+	padding-bottom: 40rpx;
 
 	.title-image {
 		position: absolute;

@@ -3,7 +3,7 @@
 		<div class="header-wrap">
 			<image
 				class="header-image"
-				src="/static/images/R-C.png"
+				src="/static/images/user_default.png"
 				mode="aspectFill"
 				fade-show="false"
 				:draggable="false"

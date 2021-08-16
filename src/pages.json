@@ -1,73 +1,79 @@
 {
-	"easycom": {
-		"autoscan": true,
-		"custom": {
-			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
-			"tui-(.*)": "thorui-uni/lib/thorui/tui-$1/tui-$1.vue"
-		}
-	},
-	"pages": [
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/order/order",
-			"style": {
-				"navigationBarTitleText": "订单管理"
-			}
-		},
-		{
-			"path": "pages/work/work",
-			"style": {
-				"navigationBarTitleText": "工单管理"
-			}
-		},
-		{
-			"path": "pages/user/user",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		}
-	],
-	"tabBar": {
-		"color": "#949494",
-		"selectedColor": "#268dfb",
-		"borderStyle": "black",
-		"backgroundColor": "#ffffff",
-		"fontSize": "14px",
-		"iconWidth": "20px",
-		"height": "60px",
-		"list": [
-			{
-				"pagePath": "pages/index/index",
-				"text": "首页",
-				"iconPath": "static/icon/tabbar/icon_index_off.png",
-				"selectedIconPath": "static/icon/tabbar/icon_index_on.png"
-			},
-			{
-				"pagePath": "pages/order/order",
-				"text": "订单",
-				"iconPath": "static/icon/tabbar/icon_order_off.png",
-				"selectedIconPath": "static/icon/tabbar/icon_order_on.png"
-			},
-			{
-				"pagePath": "pages/work/work",
-				"text": "工单",
-				"iconPath": "static/icon/tabbar/icon_scan_off.png",
-				"selectedIconPath": "static/icon/tabbar/icon_scan_on.png"
-			},
-			{
-				"pagePath": "pages/user/user",
-				"text": "我的",
-				"iconPath": "static/icon/tabbar/icon_user_off.png",
-				"selectedIconPath": "static/icon/tabbar/icon_user_on.png"
-			}
-		]
-	},
-	"globalStyle": {
-		"navigationBarBackgroundColor": "#278efb"
-	}
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+      "tui-(.*)": "thorui-uni/lib/thorui/tui-$1/tui-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/order/order",
+      "style": {
+        "navigationBarTitleText": "订单管理"
+      }
+    },
+    {
+      "path": "pages/work/work",
+      "style": {
+        "navigationBarTitleText": "工单管理"
+      }
+    },
+    {
+      "path": "pages/user/user",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#949494",
+    "selectedColor": "#268dfb",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "fontSize": "14px",
+    "iconWidth": "20px",
+    "height": "60px",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/icon/tabbar/icon_index_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_index_on.png"
+      },
+      {
+        "pagePath": "pages/order/order",
+        "text": "订单",
+        "iconPath": "static/icon/tabbar/icon_order_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_order_on.png"
+      },
+      {
+        "pagePath": "pages/work/work",
+        "text": "工单",
+        "iconPath": "static/icon/tabbar/icon_scan_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_scan_on.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "我的",
+        "iconPath": "static/icon/tabbar/icon_user_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_user_on.png"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarBackgroundColor": "#278efb"
+  }
 }
