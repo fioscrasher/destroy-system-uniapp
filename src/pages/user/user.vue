@@ -9,8 +9,8 @@
 				:draggable="false"
 			></image>
 			<div class="header-basic-info">
-				<p class="username">李立强</p>
-				<p class="desc">管理员</p>
+				<p class="username">{{ userInfo.user_name }}</p>
+				<p class="desc">{{ userInfo.role_name }}</p>
 			</div>
 		</div>
 		<tui-list-view>
@@ -18,7 +18,7 @@
 			<tui-list-cell arrow>
 				<div class="cache">
 					<text>清理缓存</text>
-					<text>200MB</text>
+					<text>{{ cacheSize }}</text>
 				</div>
 			</tui-list-cell>
 			<tui-list-cell>
@@ -27,30 +27,56 @@
 					<text>1.0.0</text>
 				</div>
 			</tui-list-cell>
-      <tui-list-cell arrow>更换密码</tui-list-cell>
-      <tui-list-cell>
+			<tui-list-cell arrow>更换密码</tui-list-cell>
+			<tui-list-cell>
 				<div class="version">
 					<text>联系管理员</text>
 					<text>020-0288-0288</text>
 				</div>
 			</tui-list-cell>
-      <tui-list-cell>
-        <div class="logout">退出登录</div>
-      </tui-list-cell>
+			<tui-list-cell>
+				<div class="logout" @click="handleLogout">退出登录</div>
+			</tui-list-cell>
 		</tui-list-view>
 	</div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
 	components: {},
-	data: () => ({}),
-	computed: {},
-	methods: {},
+	data: () => ({
+		cacheSize: "0Kb"
+	}),
+	computed: {
+		...mapState({
+			userInfo: state => state.user.userInfo
+		})
+	},
+	methods: {
+		handleLogout() {
+			this.$store.dispatch("LogOut").then(() => {
+				uni.reLaunch({
+					url: "/pages/login/login"
+				});
+			});
+		},
+		countCacheSize() {
+			let res = uni.getStorageInfoSync();
+			if (res.currentSize < 800) {
+				this.cacheSize = res.currentSize + " Kb";
+			}else{
+        this.cacheSize = parseInt(res.currentSize/1024) + " Mb";
+      }
+		}
+	},
 	watch: {},
 
 	// 页面周期函数--监听页面加载
-	onLoad() {},
+	onLoad() {
+		this.countCacheSize();
+	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
 	// 页面周期函数--监听页面显示(not-nvue)
@@ -106,13 +132,13 @@ export default {
 		justify-content: space-between;
 		padding-right: 30rpx;
 	}
-  .version{
-    display: flex;
+	.version {
+		display: flex;
 		justify-content: space-between;
-  }
-  .logout{
-    color: red;
-    text-align: center;
-  }
+	}
+	.logout {
+		color: red;
+		text-align: center;
+	}
 }
 </style>

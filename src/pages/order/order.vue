@@ -13,55 +13,67 @@
 		<view class="order-list">
 			<template v-for="item in orderList">
 				<view class="order-list-item">
-					<tui-card :title="item.title" :tag="item.tag">
+					<tui-card :title="item.title" :tag="item.tag" full>
 						<template v-slot:body>
 							<view class="order-list-item-content">
 								<uni-row>
 									<uni-col :span="12">
-										<text>工单编号：111112232324234</text>
+										<text
+											>工单编号：{{
+												item.workId > 0 ? item.workId : "暂无"
+											}}</text
+										>
 									</uni-col>
 									<uni-col :span="12">
-										<text>预估重量：3吨</text>
-									</uni-col>
-								</uni-row>
-								<uni-row>
-									<uni-col :span="12">
-										<text>订单编号：111112232324234</text>
-									</uni-col>
-									<uni-col :span="12">
-										<text>预估价格：3000元</text>
-									</uni-col>
-								</uni-row>
-								<uni-row>
-									<uni-col :span="12">
-										<text>证明编号：111112232324234</text>
-									</uni-col>
-									<uni-col :span="12">
-										<text>处理人：</text>
+										<text
+											>预估重量：<template v-if="item.estimateWeight === 1"
+												>1吨以下</template
+											><template v-else-if="item.estimateWeight === 2"
+												>1~3吨</template
+											><template v-else-if="item.estimateWeight === 3"
+												>3吨以上</template
+											>
+										</text>
 									</uni-col>
 								</uni-row>
 								<uni-row>
 									<uni-col :span="12">
-										<text>客户：广州梵软</text>
+										<text>订单编号：{{ item.id }}</text>
 									</uni-col>
 									<uni-col :span="12">
-										<text>车牌号：</text>
-									</uni-col>
-								</uni-row>
-								<uni-row>
-									<uni-col :span="12">
-										<text>联系人：李先生</text>
-									</uni-col>
-									<uni-col :span="12">
-										<text>创建时间：2020-04-23</text>
+										<text>预估价格：{{ item.estimatePrice }}元</text>
 									</uni-col>
 								</uni-row>
 								<uni-row>
 									<uni-col :span="12">
-										<text>联系电话：18111111111</text>
+										<text>证明编号：{{ item.destroyCertificateId }}</text>
 									</uni-col>
 									<uni-col :span="12">
-										<text>更新时间：2020-04-23</text>
+										<text>处理人：{{ item.handleUsername }}</text>
+									</uni-col>
+								</uni-row>
+								<uni-row>
+									<uni-col :span="12">
+										<text>客户：{{ item.realName }}</text>
+									</uni-col>
+									<uni-col :span="12">
+										<text>车牌号：{{ item.carNum }}</text>
+									</uni-col>
+								</uni-row>
+								<uni-row>
+									<uni-col :span="12">
+										<text>联系人：{{ item.linkMan }}</text>
+									</uni-col>
+									<uni-col :span="12">
+										<text>创建时间：{{ item.createTime }}</text>
+									</uni-col>
+								</uni-row>
+								<uni-row>
+									<uni-col :span="12">
+										<text>联系电话：{{ item.phone }}</text>
+									</uni-col>
+									<uni-col :span="12">
+										<text>预约时间：{{ item.appointmentTime }}</text>
 									</uni-col>
 								</uni-row>
 							</view>
@@ -74,32 +86,71 @@
 </template>
 
 <script>
+import { getList } from "@/api/order";
+
 export default {
 	components: {},
 	data: () => ({
 		searchValue: "",
 		scrollTop: 0,
-		orderList: [
-			{
-				title: {
-					text: "涉敏销毁订单"
-				},
-				tag: {
-					text: "已接单"
-				}
-			}
-		]
+		orderList: [],
+		page: {
+			pageSize: 10,
+			currentPage: 1,
+			total: 0
+		}
 	}),
 	computed: {},
 	methods: {
 		handleSearch(e) {
 			console.log(e);
+		},
+		getList(page, params = {}) {
+			getList(
+				page.currentPage,
+				page.pageSize,
+				Object.assign(params, this.query)
+			).then(res => {
+				const data = res.data.data;
+				this.page.total = data.total;
+				let records = data.records;
+				records.forEach(item => {
+					let arr = [];
+					if (item.image1) arr.push(item.image1);
+					if (item.image2) arr.push(item.image2);
+					if (item.image3) arr.push(item.image3);
+					if (item.destroyCertificateId == -1)
+						item.destroyCertificateId = "暂无";
+					item.image = arr.join(",");
+					switch (item.status) {
+						case -1:
+							item.tag = { text: "已取消" };
+							break;
+						case 0:
+							item.tag = { text: "未接单" };
+							break;
+						case 1:
+							item.tag = { text: "已接单" };
+							break;
+						case 2:
+							item.tag = { text: "已完成" };
+							break;
+						default:
+							item.tag = { text: "" };
+							break;
+					}
+					item.title = { text: "涉敏销毁订单" };
+				});
+				this.orderList = records;
+			});
 		}
 	},
 	watch: {},
 
 	// 页面周期函数--监听页面加载
-	onLoad() {},
+	onLoad() {
+		this.getList(this.page);
+	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
 	// 页面周期函数--监听页面显示(not-nvue)
@@ -131,7 +182,7 @@ export default {
 		box-shadow: 0 0 5px #ccc;
 	}
 	.order-list {
-    padding-bottom: 20rpx;
+		padding-bottom: 20rpx;
 		&-item {
 			margin-top: 20rpx;
 			&-content {

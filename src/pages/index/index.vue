@@ -9,34 +9,18 @@
 		></image>
 		<view class="index-container">
 			<view class="welcome">
-				<text class="text">欢迎回来，{{ username }}！</text>
-				<tui-tag type="green" :scaleMultiple="0.8">管理员</tui-tag>
+				<text class="text">欢迎回来，{{ userInfo.user_name }}！</text>
+				<tui-tag type="green" :scaleMultiple="0.8">
+					{{ userInfo.role_name }}
+				</tui-tag>
 			</view>
 			<view class="overview-wrap">
 				<subtitle text="七日订单情况"></subtitle>
 				<uni-row>
-					<uni-col :span="6">
+					<uni-col :span="6" v-for="item in orderStatus" :key="item.status">
 						<view class="content">
-							<text class="value">2</text>
-							<text class="desc">未接单</text>
-						</view>
-					</uni-col>
-					<uni-col :span="6">
-						<view class="content">
-							<text class="value">3</text>
-							<text class="desc">已接单</text>
-						</view>
-					</uni-col>
-					<uni-col :span="6">
-						<view class="content">
-							<text class="value">38</text>
-							<text class="desc">已完成</text>
-						</view>
-					</uni-col>
-					<uni-col :span="6">
-						<view class="content">
-							<text class="value">6</text>
-							<text class="desc">已取消</text>
+							<text class="value">{{ item.count }}</text>
+							<text class="desc">{{ item.status }}</text>
 						</view>
 					</uni-col>
 				</uni-row>
@@ -93,7 +77,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import subtitle from "@/components/subtitle/index.vue";
+import { apiStatusCount } from "@/api/index";
 
 export default {
 	components: {
@@ -101,7 +87,6 @@ export default {
 	},
 	data() {
 		return {
-			username: "李立强",
 			workPanel: [
 				{
 					name: "工单管理",
@@ -138,7 +123,7 @@ export default {
 					name: "二维码",
 					icon: "/static/icon/index/icon_qrcode.png",
 					color: "#16ae7d",
-					url: "/pages/login/login"
+					url: ""
 				}
 			],
 			gpsSwitch: false,
@@ -162,14 +147,42 @@ export default {
 					color: "#ff8c12",
 					url: ""
 				}
+			],
+			orderStatus: [
+				{ status: "未接单", count: 0 },
+				{ status: "已接单", count: 0 },
+				{ status: "已完成", count: 0 },
+				{ status: "已取消", count: 0 }
 			]
 		};
 	},
-	onLoad() {},
+	onLoad() {
+		this.getStatusCount();
+	},
+	computed: {
+		...mapState({
+			userInfo: state => state.user.userInfo
+		})
+	},
 	methods: {
 		gpsSwitchChange({ detail }) {
 			console.log(detail);
 			this.gpsSwitch = detail.value;
+		},
+		getStatusCount() {
+			apiStatusCount().then(res => {
+				let { code, data, msg } = res.data;
+				if (code === 200) {
+					this.orderStatus = data.order
+						.splice(1, 3)
+						.concat(data.order.splice(0, 1));
+				} else {
+					uni.showToast({
+						icon: "error",
+						title: msg
+					});
+				}
+			});
 		}
 	}
 };

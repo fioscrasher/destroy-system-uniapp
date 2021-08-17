@@ -57,9 +57,11 @@ axios.interceptors.response.use(
 		if (statusWhiteList.includes(status)) return Promise.reject(res);
 		//如果是401则跳转到登录页面
 		if (status === 401)
-			store
-				.dispatch("FedLogOut")
-				.then(() => uni.reLaunch("/pages/login/login"));
+			store.dispatch("FedLogOut").then(() => {
+				uni.reLaunch({
+					url: "/pages/login/login"
+				});
+			});
 		// 如果请求为非200否者默认统一处理
 		if (status !== 200) {
 			uni.showToast({

@@ -1,13 +1,8 @@
 import request from '@/router/axios';
 
-export const getList = (current, size, params) => {
+export const apiStatusCount = () => {
   return request({
-    url: '/blade-system/region/list',
-    method: 'get',
-    params: {
-      ...params,
-      current,
-      size,
-    }
-  })
-}
+    url: "/home/statusCount",
+    method: "get"
+  });
+};

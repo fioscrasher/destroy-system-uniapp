@@ -6,7 +6,7 @@ import {
 } from "@/util/auth";
 import { setStore, getStore } from "@/util/store";
 import { isURL, validatenull } from "@/util/validate";
-import { loginByUsername } from "@/api/user";
+import { loginByUsername, getUserInfo, refreshToken, logout } from "@/api/user";
 import md5 from "js-md5";
 
 const user = {
@@ -14,10 +14,6 @@ const user = {
 		tenantId: getStore({ name: "tenantId" }) || "",
 		userInfo: getStore({ name: "userInfo" }) || [],
 		permission: getStore({ name: "permission" }) || {},
-		roles: [],
-		menuId: {},
-		menu: getStore({ name: "menu" }) || [],
-		menuAll: getStore({ name: "menuAll" }) || [],
 		token: getStore({ name: "token" }) || "",
 		refreshToken: getStore({ name: "refreshToken" }) || ""
 	},
@@ -46,8 +42,6 @@ const user = {
 							commit("SET_REFRESH_TOKEN", data.refresh_token);
 							commit("SET_TENANT_ID", data.tenant_id);
 							commit("SET_USER_INFO", data);
-							// commit("DEL_ALL_TAG");
-							// commit("CLEAR_LOCK");
 						}
 						resolve();
 					})
@@ -55,7 +49,63 @@ const user = {
 						reject(error);
 					});
 			});
-		}
+		},
+		//获取用户信息
+		GetUserInfo({ commit }) {
+			return new Promise((resolve, reject) => {
+				getUserInfo()
+					.then(res => {
+						const data = res.data.data;
+						commit("SET_ROLES", data.roles);
+						resolve(data);
+					})
+					.catch(err => {
+						reject(err);
+					});
+			});
+		},
+		//刷新token
+		refreshToken({ state, commit }) {
+			window.console.log("handle refresh token");
+			return new Promise((resolve, reject) => {
+				refreshToken(state.refreshToken, state.tenantId)
+					.then(res => {
+						const data = res.data;
+						commit("SET_TOKEN", data.access_token);
+						commit("SET_REFRESH_TOKEN", data.refresh_token);
+						resolve();
+					})
+					.catch(error => {
+						reject(error);
+					});
+			});
+		},
+		// 登出
+		LogOut({ commit }) {
+			return new Promise((resolve, reject) => {
+				logout()
+					.then(() => {
+						commit("SET_TOKEN", "");
+						commit("SET_ROLES", []);
+						removeToken();
+						removeRefreshToken();
+						resolve();
+					})
+					.catch(error => {
+						reject(error);
+					});
+			});
+		},
+    //注销session
+    FedLogOut({ commit }) {
+      return new Promise(resolve => {
+        commit("SET_TOKEN", "");
+        commit("SET_ROLES", []);
+        removeToken();
+        removeRefreshToken();
+        resolve();
+      });
+    },
 	},
 	mutations: {
 		SET_TOKEN: (state, token) => {
@@ -72,21 +122,15 @@ const user = {
 			state.tenantId = tenantId;
 			setStore({ name: "tenantId", content: state.tenantId });
 		},
-		SET_REFRESH_TOKEN: (state, refreshToken) => {
-			setRefreshToken(refreshToken);
-			state.refreshToken = refreshToken;
-			setStore({ name: "refreshToken", content: state.refreshToken });
-		},
-		SET_TENANT_ID: (state, tenantId) => {
-			state.tenantId = tenantId;
-			setStore({ name: "tenantId", content: state.tenantId });
-		},
 		SET_USER_INFO: (state, userInfo) => {
 			if (validatenull(userInfo.avatar)) {
 				userInfo.avatar = "/static/images/user_default.png";
 			}
 			state.userInfo = userInfo;
 			setStore({ name: "userInfo", content: state.userInfo });
+		},
+		SET_ROLES: (state, roles) => {
+			state.roles = roles;
 		}
 	}
 };
