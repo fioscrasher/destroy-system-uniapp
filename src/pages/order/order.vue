@@ -12,75 +12,57 @@
 		</tui-sticky>
 		<view class="order-list">
 			<template v-for="item in orderList">
-				<view class="order-list-item">
-					<tui-card :title="item.title" :tag="item.tag" full>
+				<view class="order-list-item" @click="handleItemClick()">
+					<tui-card :title="item.title" :tag="item.tag">
 						<template v-slot:body>
 							<view class="order-list-item-content">
-								<uni-row>
-									<uni-col :span="12">
-										<text
-											>工单编号：{{
-												item.workId > 0 ? item.workId : "暂无"
-											}}</text
-										>
-									</uni-col>
-									<uni-col :span="12">
-										<text
-											>预估重量：<template v-if="item.estimateWeight === 1"
-												>1吨以下</template
-											><template v-else-if="item.estimateWeight === 2"
-												>1~3吨</template
-											><template v-else-if="item.estimateWeight === 3"
-												>3吨以上</template
-											>
-										</text>
-									</uni-col>
-								</uni-row>
-								<uni-row>
-									<uni-col :span="12">
-										<text>订单编号：{{ item.id }}</text>
-									</uni-col>
-									<uni-col :span="12">
-										<text>预估价格：{{ item.estimatePrice }}元</text>
-									</uni-col>
-								</uni-row>
-								<uni-row>
-									<uni-col :span="12">
-										<text>证明编号：{{ item.destroyCertificateId }}</text>
-									</uni-col>
-									<uni-col :span="12">
-										<text>处理人：{{ item.handleUsername }}</text>
-									</uni-col>
-								</uni-row>
-								<uni-row>
-									<uni-col :span="12">
-										<text>客户：{{ item.realName }}</text>
-									</uni-col>
-									<uni-col :span="12">
-										<text>车牌号：{{ item.carNum }}</text>
-									</uni-col>
-								</uni-row>
-								<uni-row>
-									<uni-col :span="12">
-										<text>联系人：{{ item.linkMan }}</text>
-									</uni-col>
-									<uni-col :span="12">
-										<text>创建时间：{{ item.createTime }}</text>
-									</uni-col>
-								</uni-row>
-								<uni-row>
-									<uni-col :span="12">
-										<text>联系电话：{{ item.phone }}</text>
-									</uni-col>
-									<uni-col :span="12">
-										<text>预约时间：{{ item.appointmentTime }}</text>
-									</uni-col>
-								</uni-row>
+								<view class="order-list-item-text">
+									<text>订单编号：{{ item.id }}</text>
+									<text class="link" @click.stop="handleCopy(item.id)"
+										>复制</text
+									>
+								</view>
+								<view class="order-list-item-text">
+									<text
+										>工单编号：{{
+											item.workId > 0 ? item.workId : "暂无"
+										}}</text
+									>
+									<text
+										class="link"
+										@click.stop="handleCopy(item.workId)"
+										v-if="item.workId > 0"
+										>复制</text
+									>
+								</view>
+								<view class="order-list-item-text">
+									<text>客户：{{ item.realName }}</text>
+								</view>
+								<view class="order-list-item-text">
+									<text>创建时间：{{ item.createTime }}</text>
+								</view>
+								<view class="order-list-item-text">
+									<text>处理人：{{ item.handleUsername }}</text>
+								</view>
+								<view class="order-list-item-text">
+									<text>证明编号：{{ item.destroyCertificateId }}</text>
+									<text
+										class="link"
+										@click.stop="handleCopy(item.destroyCertificateId)"
+										v-if="Number(item.destroyCertificateId)"
+										>复制</text
+									>
+								</view>
 							</view>
 						</template>
 					</tui-card>
 				</view>
 			</template>
+			<tui-loadmore text="加载中..." v-if="loading"></tui-loadmore>
+			<tui-nomore
+				v-if="page.currentPage === page.totalPages && !loading"
+				backgroundColor="#eeeeee"
+			></tui-nomore>
 		</view>
 	</view>
 </template>
@@ -91,13 +73,15 @@ import { getList } from "@/api/order";
 export default {
 	components: {},
 	data: () => ({
+		loading: false,
 		searchValue: "",
 		scrollTop: 0,
 		orderList: [],
 		page: {
 			pageSize: 10,
 			currentPage: 1,
-			total: 0
+			total: 0,
+			totalPages: 1
 		}
 	}),
 	computed: {},
@@ -105,7 +89,21 @@ export default {
 		handleSearch(e) {
 			console.log(e);
 		},
+		handleCopy(text) {
+			uni.setClipboardData({
+				data: text,
+				success: function() {
+					uni.showToast({
+						title: "已复制"
+					});
+				}
+			});
+		},
+    handleItemClick(){
+      console.log(123)
+    },
 		getList(page, params = {}) {
+			this.loading = true;
 			getList(
 				page.currentPage,
 				page.pageSize,
@@ -113,6 +111,7 @@ export default {
 			).then(res => {
 				const data = res.data.data;
 				this.page.total = data.total;
+				this.page.totalPages = data.pages;
 				let records = data.records;
 				records.forEach(item => {
 					let arr = [];
@@ -124,16 +123,16 @@ export default {
 					item.image = arr.join(",");
 					switch (item.status) {
 						case -1:
-							item.tag = { text: "已取消" };
+							item.tag = { text: "已取消", color: "#268efb" };
 							break;
 						case 0:
-							item.tag = { text: "未接单" };
+							item.tag = { text: "未接单", color: "#268efb" };
 							break;
 						case 1:
-							item.tag = { text: "已接单" };
+							item.tag = { text: "已接单", color: "#268efb" };
 							break;
 						case 2:
-							item.tag = { text: "已完成" };
+							item.tag = { text: "已完成", color: "#268efb" };
 							break;
 						default:
 							item.tag = { text: "" };
@@ -141,7 +140,8 @@ export default {
 					}
 					item.title = { text: "涉敏销毁订单" };
 				});
-				this.orderList = records;
+				this.orderList = this.orderList.concat(records);
+				this.loading = false;
 			});
 		}
 	},
@@ -161,10 +161,24 @@ export default {
 	onUnload() {},
 	// 页面处理函数--监听用户下拉动作
 	onPullDownRefresh() {
+		this.page = {
+			pageSize: 10,
+			currentPage: 1,
+			total: 0,
+			totalPages: 1
+		};
+		this.orderList = [];
+		this.getList(this.page);
 		uni.stopPullDownRefresh();
 	},
 	// 页面处理函数--监听用户上拉触底
-	onReachBottom() {},
+	onReachBottom() {
+		if (!this.loading)
+			if (this.page.currentPage < this.page.totalPages) {
+				this.page.currentPage++;
+				this.getList(this.page);
+			}
+	},
 	// 页面处理函数--监听页面滚动(not-nvue)
 	onPageScroll({ scrollTop }) {
 		this.scrollTop = scrollTop;
@@ -190,7 +204,20 @@ export default {
 				font-size: 24rpx;
 				line-height: 36rpx;
 			}
+			&-text {
+				display: flex;
+				align-items: center;
+				height: 50rpx;
+			}
 		}
 	}
+}
+
+.link{
+  color: #268efb;
+  margin-left: 30rpx;
+  &:active{
+    background-color: #eeeeee;
+  }
 }
 </style>

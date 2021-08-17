@@ -42,15 +42,17 @@
 						<template v-slot:body>
 							<view class="work-list-item-content">
 								<uni-row>
-									<uni-col :span="20">
-										<view>工单编号：111112232324234</view>
-										<view>客户：广州梵软</view>
-										<view>处理人：张三</view>
-										<view>创建时间：2020-04-23</view>
-										<view>更新时间：2020-04-23</view>
-									</uni-col>
-									<uni-col :span="4">
-										<tui-button :size="24" height="60rpx">打包</tui-button>
+									<uni-col :span="24">
+										<view>
+											工单编号：{{ item.id }}
+											<text class="link" @click.stop="handleCopy(item.id)"
+												>复制</text
+											>
+										</view>
+										<view>客户：{{ item.realName }}</view>
+										<view>处理人：{{ item.handleUsername }}</view>
+										<view>创建时间：{{ item.createTime }}</view>
+										<view>更新时间：{{ item.updateTime }}</view>
 									</uni-col>
 								</uni-row>
 							</view>
@@ -58,11 +60,18 @@
 					</tui-card>
 				</view>
 			</template>
+			<tui-loadmore text="加载中..." v-if="loading"></tui-loadmore>
+			<tui-nomore
+				v-if="page.currentPage === page.totalPages && !loading"
+				backgroundColor="#eeeeee"
+			></tui-nomore>
 		</view>
 	</view>
 </template>
 
 <script>
+import { getList } from "@/api/work";
+
 export default {
 	components: {},
 	data: () => ({
@@ -80,30 +89,100 @@ export default {
 			{ value: 6, text: "销毁" },
 			{ value: 7, text: "完成" }
 		],
-		workList: [
-			{
-				title: {
-					text: "涉敏销毁订单"
-				},
-				tag: {
-					text: "打包"
-				}
-			}
-		]
+		workList: [],
+		page: {
+			pageSize: 10,
+			currentPage: 1,
+			total: 0,
+			totalPages: 1
+		},
+		params: {
+			status: null
+		},
+		loading: false
 	}),
 	computed: {},
 	methods: {
 		handleSearch(e) {
 			console.log(e);
 		},
-		change(e) {
-			console.log("e:", e);
+		change({ detail }) {
+			if (detail.value > 0) {
+				this.params.status = detail.value;
+			} else {
+				this.params.status = null;
+			}
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.workList = [];
+			this.getList(this.page, this.params);
+		},
+		handleCopy(text) {
+			uni.setClipboardData({
+				data: text,
+				success: function() {
+					uni.showToast({
+						title: "已复制"
+					});
+				}
+			});
+		},
+		getList(page, params = {}) {
+			this.loading = true;
+			getList(
+				page.currentPage,
+				page.pageSize,
+				Object.assign(params, this.query)
+			).then(res => {
+				const data = res.data.data;
+				this.page.total = data.total;
+				this.page.totalPages = data.pages;
+				let records = data.records;
+				records.forEach(item => {
+					item.tag = { color: "#268efb" };
+					switch (item.status) {
+						case 1:
+							item.tag.text = "上门打包";
+							break;
+						case 2:
+							item.tag.text = "搬运";
+							break;
+						case 3:
+							item.tag.text = "过磅卸车";
+							break;
+						case 4:
+							item.tag.text = "入库";
+							break;
+						case 5:
+							item.tag.text = "出库";
+							break;
+						case 6:
+							item.tag.text = "销毁";
+							break;
+						case 7:
+							item.tag.text = "已完成";
+							break;
+						default:
+							item.tag.text = "";
+							break;
+					}
+					item.title = { text: "涉敏销毁订单" };
+				});
+				this.workList = this.workList.concat(records);
+				this.loading = false;
+			});
 		}
 	},
 	watch: {},
 
 	// 页面周期函数--监听页面加载
-	onLoad() {},
+	onLoad() {
+		this.getList(this.page, this.params);
+	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
 	// 页面周期函数--监听页面显示(not-nvue)
@@ -114,10 +193,24 @@ export default {
 	onUnload() {},
 	// 页面处理函数--监听用户下拉动作
 	onPullDownRefresh() {
+		this.page = {
+			pageSize: 10,
+			currentPage: 1,
+			total: 0,
+			totalPages: 1
+		};
+		this.workList = [];
+		this.getList(this.page, this.params);
 		uni.stopPullDownRefresh();
 	},
 	// 页面处理函数--监听用户上拉触底
-	onReachBottom() {},
+	onReachBottom() {
+		if (!this.loading)
+			if (this.page.currentPage < this.page.totalPages) {
+				this.page.currentPage++;
+				this.getList(this.page, this.params);
+			}
+	},
 	// 页面处理函数--监听页面滚动(not-nvue)
 	onPageScroll({ scrollTop }) {
 		this.scrollTop = scrollTop;
@@ -152,6 +245,14 @@ export default {
 				line-height: 36rpx;
 			}
 		}
+	}
+}
+
+.link {
+	color: #268efb;
+	margin-left: 30rpx;
+	&:active {
+		background-color: #eeeeee;
 	}
 }
 </style>

@@ -3,7 +3,9 @@
 		<div class="header-wrap">
 			<image
 				class="header-image"
-				src="/static/images/user_default.png"
+				:src="
+					userInfo.avatar ? userInfo.avatar : '/static/images/user_default.png'
+				"
 				mode="aspectFill"
 				fade-show="false"
 				:draggable="false"
@@ -65,10 +67,10 @@ export default {
 		countCacheSize() {
 			let res = uni.getStorageInfoSync();
 			if (res.currentSize < 800) {
-				this.cacheSize = res.currentSize + " Kb";
-			}else{
-        this.cacheSize = parseInt(res.currentSize/1024) + " Mb";
-      }
+				this.cacheSize = res.currentSize + " KB";
+			} else {
+				this.cacheSize = parseInt(res.currentSize / 1024) + " MB";
+			}
 		}
 	},
 	watch: {},
