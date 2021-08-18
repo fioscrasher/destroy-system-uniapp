@@ -1,74 +1,50 @@
 <template>
-	<view class="order-wrap">
+	<div class="package-wrap">
 		<tui-sticky :scrollTop="scrollTop" stickyHeight="90rpx">
 			<template v-slot:header>
 				<uni-search-bar
 					@confirm="handleSearch"
 					v-model="searchValue"
 					placeholder="搜索订单编号或者客户名称"
-					class="order-search"
+					class="package-search"
 				></uni-search-bar>
 			</template>
 		</tui-sticky>
-		<view class="order-list">
-			<template v-for="item in orderList">
-				<view class="order-list-item" @click="handleItemClick()">
+		<view class="package-list">
+			<template v-for="item in packageList">
+				<view class="package-list-item" @click="handleItemClick()">
 					<tui-card :title="item.title" :tag="item.tag">
 						<template v-slot:body>
-							<view class="order-list-item-content">
-								<view class="order-list-item-text">
-									<text>订单编号：{{ item.id }}</text>
+							<view class="package-list-item-content">
+								<view class="package-list-item-text">
+									<text>工单编号：{{ item.id }}</text>
 									<text class="link" @click.stop="handleCopy(item.id)"
 										>复制</text
 									>
 								</view>
-								<view class="order-list-item-text">
-									<text
-										>工单编号：{{
-											item.workId > 0 ? item.workId : "暂无"
-										}}</text
-									>
-									<text
-										class="link"
-										@click.stop="handleCopy(item.workId)"
-										v-if="item.workId > 0"
-										>复制</text
-									>
-								</view>
-								<view class="order-list-item-text">
+								<view class="package-list-item-text">
 									<text>客户：{{ item.realName }}</text>
 								</view>
-								<view class="order-list-item-text">
-									<text>创建时间：{{ item.createTime }}</text>
-								</view>
-								<view class="order-list-item-text">
+								<view class="package-list-item-text">
 									<text>处理人：{{ item.handleUsername }}</text>
 								</view>
-								<view class="order-list-item-text">
-									<text>证明编号：{{ item.destroyCertificateId }}</text>
-									<text
-										class="link"
-										@click.stop="handleCopy(item.destroyCertificateId)"
-										v-if="Number(item.destroyCertificateId)"
-										>复制</text
-									>
+								<view class="package-list-item-text">
+									<text>创建时间：{{ item.createTime }}</text>
+								</view>
+                <view class="package-list-item-text">
+									<text>更新时间：{{ item.updateTime }}</text>
 								</view>
 							</view>
 						</template>
 					</tui-card>
 				</view>
 			</template>
-			<tui-loadmore text="加载中..." v-if="loading"></tui-loadmore>
-			<tui-nomore
-				v-if="page.currentPage === page.totalPages && !loading"
-				backgroundColor="#eeeeee"
-			></tui-nomore>
 		</view>
-	</view>
+	</div>
 </template>
 
 <script>
-import { getList } from "@/api/order";
+import { getList } from "@/api/work";
 
 export default {
 	components: {},
@@ -76,14 +52,16 @@ export default {
 		loading: false,
 		searchValue: "",
 		scrollTop: 0,
-		orderList: [],
+		packageList: [],
 		page: {
 			pageSize: 10,
 			currentPage: 1,
 			total: 0,
 			totalPages: 1
 		},
-    query: {}
+		query: {
+			status: 1
+		}
 	}),
 	computed: {},
 	methods: {
@@ -100,9 +78,9 @@ export default {
 				}
 			});
 		},
-    handleItemClick(){
-      console.log(123)
-    },
+		handleItemClick() {
+			console.log(123);
+		},
 		getList(page, params = {}) {
 			this.loading = true;
 			getList(
@@ -115,33 +93,36 @@ export default {
 				this.page.totalPages = data.pages;
 				let records = data.records;
 				records.forEach(item => {
-					let arr = [];
-					if (item.image1) arr.push(item.image1);
-					if (item.image2) arr.push(item.image2);
-					if (item.image3) arr.push(item.image3);
-					if (item.destroyCertificateId == -1)
-						item.destroyCertificateId = "暂无";
-					item.image = arr.join(",");
+					item.tag = { color: "#268efb" };
 					switch (item.status) {
-						case -1:
-							item.tag = { text: "已取消", color: "#268efb" };
-							break;
-						case 0:
-							item.tag = { text: "未接单", color: "#268efb" };
-							break;
 						case 1:
-							item.tag = { text: "已接单", color: "#268efb" };
+							item.tag.text = "上门打包";
 							break;
 						case 2:
-							item.tag = { text: "已完成", color: "#268efb" };
+							item.tag.text = "搬运";
+							break;
+						case 3:
+							item.tag.text = "过磅卸车";
+							break;
+						case 4:
+							item.tag.text = "入库";
+							break;
+						case 5:
+							item.tag.text = "出库";
+							break;
+						case 6:
+							item.tag.text = "销毁";
+							break;
+						case 7:
+							item.tag.text = "已完成";
 							break;
 						default:
-							item.tag = { text: "" };
+							item.tag.text = "";
 							break;
 					}
 					item.title = { text: "涉敏销毁订单" };
 				});
-				this.orderList = this.orderList.concat(records);
+				this.packageList = this.packageList.concat(records);
 				this.loading = false;
 			});
 		}
@@ -168,18 +149,12 @@ export default {
 			total: 0,
 			totalPages: 1
 		};
-		this.orderList = [];
+		this.packageList = [];
 		this.getList(this.page);
 		uni.stopPullDownRefresh();
 	},
 	// 页面处理函数--监听用户上拉触底
-	onReachBottom() {
-		if (!this.loading)
-			if (this.page.currentPage < this.page.totalPages) {
-				this.page.currentPage++;
-				this.getList(this.page);
-			}
-	},
+	onReachBottom() {},
 	// 页面处理函数--监听页面滚动(not-nvue)
 	onPageScroll({ scrollTop }) {
 		this.scrollTop = scrollTop;
@@ -190,13 +165,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.order-wrap {
-	background-color: #eeeeee;
-	.order-search {
+.package-wrap {
+	.package-search {
 		background-color: #ffffff;
 		box-shadow: 0 0 5px #ccc;
 	}
-	.order-list {
+	.package-list {
 		padding-bottom: 20rpx;
 		&-item {
 			margin-top: 20rpx;
@@ -214,11 +188,11 @@ export default {
 	}
 }
 
-.link{
-  color: #268efb;
-  margin-left: 30rpx;
-  &:active{
-    background-color: #eeeeee;
-  }
+.link {
+	color: #268efb;
+	margin-left: 30rpx;
+	&:active {
+		background-color: #eeeeee;
+	}
 }
 </style>

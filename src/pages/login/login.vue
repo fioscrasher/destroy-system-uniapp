@@ -23,7 +23,7 @@
 					:disabled="loading"
 				/>
 			</view>
-			<view class="username form-wrap-item">
+			<!-- <view class="username form-wrap-item">
 				<image
 					:src="loginForm.image"
 					class="form-wrap-item-image"
@@ -37,7 +37,7 @@
 					placeholder-class="form-placeholder"
 					:disabled="loading"
 				/>
-			</view>
+			</view> -->
 			<view class="form-wrap-item-button">
 				<tui-button
 					:loading="loading"
@@ -87,11 +87,11 @@ export default {
 				rule: ["required"],
 				msg: ["请输入密码"]
 			},
-			{
-				name: "code",
-				rule: ["required"],
-				msg: ["请输入验证码"]
-			}
+			// {
+			// 	name: "code",
+			// 	rule: ["required"],
+			// 	msg: ["请输入验证码"]
+			// }
 		]
 	}),
 	computed: {},
@@ -132,7 +132,7 @@ export default {
 
 	// 页面周期函数--监听页面加载
 	onLoad() {
-		this.refreshCode();
+		// this.refreshCode();
 	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
@@ -175,7 +175,7 @@ export default {
 	.form-wrap {
 		width: 80%;
 		margin-top: 50rpx;
-		height: 520rpx;
+		height: 420rpx;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;

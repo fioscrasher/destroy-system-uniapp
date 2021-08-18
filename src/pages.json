@@ -38,6 +38,13 @@
       "style": {
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/package/package",
+      "style": {
+        "navigationBarTitleText": "打包管理",
+        "enablePullDownRefresh": true
+      }
     }
   ],
   "tabBar": {

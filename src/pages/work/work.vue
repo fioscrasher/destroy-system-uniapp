@@ -96,9 +96,9 @@ export default {
 			total: 0,
 			totalPages: 1
 		},
-		params: {
-			status: null
-		},
+    query: {
+      status: null
+    },
 		loading: false
 	}),
 	computed: {},
@@ -108,9 +108,9 @@ export default {
 		},
 		change({ detail }) {
 			if (detail.value > 0) {
-				this.params.status = detail.value;
+				this.query.status = detail.value;
 			} else {
-				this.params.status = null;
+				this.query.status = null;
 			}
 			this.page = {
 				pageSize: 10,
@@ -119,7 +119,7 @@ export default {
 				totalPages: 1
 			};
 			this.workList = [];
-			this.getList(this.page, this.params);
+			this.getList(this.page);
 		},
 		handleCopy(text) {
 			uni.setClipboardData({
@@ -181,7 +181,7 @@ export default {
 
 	// 页面周期函数--监听页面加载
 	onLoad() {
-		this.getList(this.page, this.params);
+		this.getList(this.page);
 	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
@@ -200,7 +200,7 @@ export default {
 			totalPages: 1
 		};
 		this.workList = [];
-		this.getList(this.page, this.params);
+		this.getList(this.page);
 		uni.stopPullDownRefresh();
 	},
 	// 页面处理函数--监听用户上拉触底
@@ -208,7 +208,7 @@ export default {
 		if (!this.loading)
 			if (this.page.currentPage < this.page.totalPages) {
 				this.page.currentPage++;
-				this.getList(this.page, this.params);
+				this.getList(this.page);
 			}
 	},
 	// 页面处理函数--监听页面滚动(not-nvue)

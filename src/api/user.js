@@ -20,7 +20,7 @@ export const loginByUsername = (
 			tenantId,
 			username,
 			password,
-			grant_type: "captcha",
+			grant_type: "password",
 			scope: "all",
 			type
 		}

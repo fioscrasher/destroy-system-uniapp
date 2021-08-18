@@ -99,7 +99,7 @@ export default {
 					name: "打包管理",
 					icon: "/static/icon/index/icon_work.png",
 					color: "#fe735c",
-					url: ""
+					url: "/pages/package/package"
 				},
 				{
 					name: "出入库管理",
