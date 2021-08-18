@@ -38,26 +38,30 @@
 		<view class="work-list">
 			<template v-for="item in workList">
 				<view class="work-list-item">
-					<tui-card :title="item.title" :tag="item.tag">
-						<template v-slot:body>
-							<view class="work-list-item-content">
-								<uni-row>
-									<uni-col :span="24">
-										<view>
-											工单编号：{{ item.id }}
-											<text class="link" @click.stop="handleCopy(item.id)"
-												>复制</text
-											>
-										</view>
-										<view>客户：{{ item.realName }}</view>
-										<view>处理人：{{ item.handleUsername }}</view>
-										<view>创建时间：{{ item.createTime }}</view>
-										<view>更新时间：{{ item.updateTime }}</view>
-									</uni-col>
-								</uni-row>
+					<uni-card :title="item.title">
+            <template v-slot:header>
+							<view class="work-list-item-header">
+								<text>{{ item.title }}</text>
+								<tui-tag size="20rpx" padding="12rpx">{{ item.tag }}</tui-tag>
 							</view>
 						</template>
-					</tui-card>
+						<view class="work-list-item-content">
+							<uni-row>
+								<uni-col :span="24">
+									<view>
+										工单编号：{{ item.id }}
+										<text class="link" @click.stop="handleCopy(item.id)"
+											>复制</text
+										>
+									</view>
+									<view>客户：{{ item.realName }}</view>
+									<view>处理人：{{ item.handleUsername }}</view>
+									<view>创建时间：{{ item.createTime }}</view>
+									<view>更新时间：{{ item.updateTime }}</view>
+								</uni-col>
+							</uni-row>
+						</view>
+					</uni-card>
 				</view>
 			</template>
 			<tui-loadmore text="加载中..." v-if="loading"></tui-loadmore>
@@ -96,9 +100,9 @@ export default {
 			total: 0,
 			totalPages: 1
 		},
-    query: {
-      status: null
-    },
+		query: {
+			status: null
+		},
 		loading: false
 	}),
 	computed: {},
@@ -143,34 +147,33 @@ export default {
 				this.page.totalPages = data.pages;
 				let records = data.records;
 				records.forEach(item => {
-					item.tag = { color: "#268efb" };
 					switch (item.status) {
 						case 1:
-							item.tag.text = "上门打包";
+							item.tag = "上门打包";
 							break;
 						case 2:
-							item.tag.text = "搬运";
+							item.tag = "搬运";
 							break;
 						case 3:
-							item.tag.text = "过磅卸车";
+							item.tag = "过磅卸车";
 							break;
 						case 4:
-							item.tag.text = "入库";
+							item.tag = "入库";
 							break;
 						case 5:
-							item.tag.text = "出库";
+							item.tag = "出库";
 							break;
 						case 6:
-							item.tag.text = "销毁";
+							item.tag = "销毁";
 							break;
 						case 7:
-							item.tag.text = "已完成";
+							item.tag = "已完成";
 							break;
 						default:
-							item.tag.text = "";
+							item.tag = "";
 							break;
 					}
-					item.title = { text: "涉敏销毁订单" };
+					item.title = "涉敏销毁订单";
 				});
 				this.workList = this.workList.concat(records);
 				this.loading = false;
@@ -239,8 +242,15 @@ export default {
 		padding-bottom: 20rpx;
 		&-item {
 			margin-top: 20rpx;
+      &-header {
+        color: #666666;
+				font-size: 34rpx;
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
 			&-content {
-				padding: 20rpx;
 				font-size: 24rpx;
 				line-height: 36rpx;
 			}

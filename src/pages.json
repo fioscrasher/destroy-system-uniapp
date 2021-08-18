@@ -45,6 +45,13 @@
         "navigationBarTitleText": "打包管理",
         "enablePullDownRefresh": true
       }
+    },
+    {
+      "path": "pages/package/create",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": true
+      }
     }
   ],
   "tabBar": {
