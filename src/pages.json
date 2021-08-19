@@ -28,6 +28,12 @@
       }
     },
     {
+      "path": "pages/work/follow",
+      "style": {
+        "navigationBarTitleText": "工单跟进"
+      }
+    },
+    {
       "path": "pages/user/user",
       "style": {
         "navigationStyle": "custom"

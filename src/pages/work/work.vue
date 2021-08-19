@@ -38,8 +38,8 @@
 		<view class="work-list">
 			<template v-for="item in workList">
 				<view class="work-list-item">
-					<uni-card :title="item.title">
-            <template v-slot:header>
+					<uni-card :title="item.title" @click="handleItemClick(item)">
+						<template v-slot:header>
 							<view class="work-list-item-header">
 								<text>{{ item.title }}</text>
 								<tui-tag size="20rpx" padding="12rpx">{{ item.tag }}</tui-tag>
@@ -134,6 +134,9 @@ export default {
 					});
 				}
 			});
+		},
+		handleItemClick({ id, status }) {
+			uni.navigateTo({ url: `/pages/work/follow?id=${id}&status=${status}` });
 		},
 		getList(page, params = {}) {
 			this.loading = true;
@@ -242,8 +245,8 @@ export default {
 		padding-bottom: 20rpx;
 		&-item {
 			margin-top: 20rpx;
-      &-header {
-        color: #666666;
+			&-header {
+				color: #666666;
 				font-size: 34rpx;
 				width: 100%;
 				display: flex;
