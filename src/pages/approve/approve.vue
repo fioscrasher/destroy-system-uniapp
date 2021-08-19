@@ -1,41 +1,43 @@
 <template>
-	<div class="package-wrap">
+	<div class="approve-wrap">
 		<tui-sticky :scrollTop="scrollTop" stickyHeight="90rpx">
 			<template v-slot:header>
 				<uni-search-bar
 					@confirm="handleSearch"
 					v-model="searchValue"
-					placeholder="搜索订单编号或者客户名称"
-					class="package-search"
+					placeholder="搜索工单编号"
+					class="approve-search"
 				></uni-search-bar>
 			</template>
 		</tui-sticky>
-		<view class="package-list">
-			<template v-for="item in packageList">
-				<view class="package-list-item">
-					<uni-card :title="item.title" @click="handleItemClick(item.id)">
+		<view class="approve-list">
+			<template v-for="item in approveList">
+				<view class="approve-list-item">
+					<uni-card :title="item.auditType" @click="handleItemClick(item)">
 						<template v-slot:header>
-							<view class="package-list-item-header">
-								<text>{{ item.title }}</text>
+							<view class="approve-list-item-header">
+								<text>{{ item.auditType }}</text>
 								<tui-tag size="20rpx" padding="12rpx">{{ item.tag }}</tui-tag>
 							</view>
 						</template>
-						<view class="package-list-item-content">
-							<view class="package-list-item-text">
-								<text>工单编号：{{ item.id }}</text>
-								<text class="link" @click.stop="handleCopy(item.id)">复制</text>
+						<view class="approve-list-item-content">
+							<view class="approve-list-item-text">
+								<text>工单编号：{{ item.workId }}</text>
+								<text class="link" @click.stop="handleCopy(item.workId)"
+									>复制</text
+								>
 							</view>
-							<view class="package-list-item-text">
-								<text>客户：{{ item.realName }}</text>
+							<view class="approve-list-item-text">
+								<text>提交人：{{ item.submitUser }}</text>
 							</view>
-							<view class="package-list-item-text">
-								<text>处理人：{{ item.handleUsername }}</text>
+							<view class="approve-list-item-text">
+								<text>处理人：{{ item.auditUser }}</text>
 							</view>
-							<view class="package-list-item-text">
-								<text>创建时间：{{ item.createTime }}</text>
+							<view class="approve-list-item-text">
+								<text>提交时间：{{ item.submitTime }}</text>
 							</view>
-							<view class="package-list-item-text">
-								<text>更新时间：{{ item.updateTime }}</text>
+							<view class="approve-list-item-text">
+								<text>审核时间：{{ item.auditTime }}</text>
 							</view>
 						</view>
 					</uni-card>
@@ -51,7 +53,7 @@
 </template>
 
 <script>
-import { getList } from "@/api/work";
+import { getList } from "@/api/approve";
 
 export default {
 	components: {},
@@ -59,21 +61,27 @@ export default {
 		loading: false,
 		searchValue: "",
 		scrollTop: 0,
-		packageList: [],
+		approveList: [],
 		page: {
 			pageSize: 10,
 			currentPage: 1,
 			total: 0,
 			totalPages: 1
 		},
-		query: {
-			status: 1
-		}
+		query: {}
 	}),
 	computed: {},
 	methods: {
-		handleSearch(e) {
-			console.log(e);
+		handleSearch() {
+			this.query.workId = this.searchValue;
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.approveList = [];
+			this.getList(this.page);
 		},
 		handleCopy(text) {
 			uni.setClipboardData({
@@ -85,9 +93,10 @@ export default {
 				}
 			});
 		},
-		handleItemClick(id) {
+		handleItemClick(item) {
+			this.$store.commit("SET_APPROVE_ITEM", item);
 			uni.navigateTo({
-				url: `create?id=${id}`
+				url: `detail`
 			});
 		},
 		getList(page, params = {}) {
@@ -102,35 +111,22 @@ export default {
 				this.page.totalPages = data.pages;
 				let records = data.records;
 				records.forEach(item => {
-					switch (item.status) {
+					switch (item.auditStatus) {
+						case -1:
+							item.tag = "审批不通过";
+							break;
+						case 0:
+							item.tag = "待审批";
+							break;
 						case 1:
-							item.tag = "上门打包";
-							break;
-						case 2:
-							item.tag = "搬运";
-							break;
-						case 3:
-							item.tag = "过磅卸车";
-							break;
-						case 4:
-							item.tag = "入库";
-							break;
-						case 5:
-							item.tag = "出库";
-							break;
-						case 6:
-							item.tag = "销毁";
-							break;
-						case 7:
-							item.tag = "已完成";
+							item.tag = "已审批";
 							break;
 						default:
 							item.tag = "";
 							break;
 					}
-					item.title = "涉敏销毁订单";
 				});
-				this.packageList = this.packageList.concat(records);
+				this.approveList = this.approveList.concat(records);
 				this.loading = false;
 			});
 		}
@@ -140,6 +136,16 @@ export default {
 	// 页面周期函数--监听页面加载
 	onLoad() {
 		this.getList(this.page);
+		uni.$on("approve", () => {
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.approveList = [];
+			this.getList(this.page);
+		});
 	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
@@ -157,18 +163,18 @@ export default {
 			total: 0,
 			totalPages: 1
 		};
-		this.packageList = [];
+		this.approveList = [];
 		this.getList(this.page);
 		uni.stopPullDownRefresh();
 	},
 	// 页面处理函数--监听用户上拉触底
 	onReachBottom() {
-    if (!this.loading)
+		if (!this.loading)
 			if (this.page.currentPage < this.page.totalPages) {
 				this.page.currentPage++;
 				this.getList(this.page);
 			}
-  },
+	},
 	// 页面处理函数--监听页面滚动(not-nvue)
 	onPageScroll({ scrollTop }) {
 		this.scrollTop = scrollTop;
@@ -179,17 +185,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.package-wrap {
-	.package-search {
+.approve-wrap {
+	.approve-search {
 		background-color: #ffffff;
 		box-shadow: 0 0 5px #ccc;
 	}
-	.package-list {
+	.approve-list {
 		padding-bottom: 20rpx;
 		&-item {
 			margin-top: 20rpx;
 			&-header {
-        color: #666666;
+				color: #666666;
 				font-size: 34rpx;
 				width: 100%;
 				display: flex;

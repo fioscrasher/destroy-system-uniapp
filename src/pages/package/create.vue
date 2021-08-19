@@ -175,7 +175,13 @@ export default {
 		uni.stopPullDownRefresh();
 	},
 	// 页面处理函数--监听用户上拉触底
-	onReachBottom() {}
+	onReachBottom() {
+    if (!this.loading)
+			if (this.page.currentPage < this.page.totalPages) {
+				this.page.currentPage++;
+				this.getList(this.page);
+			}
+  }
 	// 页面处理函数--监听页面滚动(not-nvue)
 	// onPageScroll({ scrollTop }) {}
 	// 页面处理函数--用户点击右上角分享

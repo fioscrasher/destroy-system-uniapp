@@ -52,6 +52,19 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": true
       }
+    },
+    {
+      "path": "pages/approve/approve",
+      "style": {
+        "navigationBarTitleText": "流程审批",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/approve/detail",
+      "style": {
+        "navigationBarTitleText": "审批详情"
+      }
     }
   ],
   "tabBar": {

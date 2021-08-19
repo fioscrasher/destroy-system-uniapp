@@ -2,6 +2,7 @@ import axios from "axios-miniprogram";
 import store from "@/store/";
 import { Base64 } from "js-base64";
 import { getToken } from "@/util/auth";
+import { serialize } from "@/util/util";
 
 // #ifdef APP-PLUS
 axios.defaults.baseURL = "http://114.96.76.108:8082/api";
@@ -36,8 +37,13 @@ axios.interceptors.request.use(
 			config.headers["Content-Type"] = "text/plain";
 		}
 		//headers中配置serialize为true开启序列化
-		if (config.method === "post" && meta.isSerialize === true) {
-			config.data = serialize(config.data);
+		if (config.method === "post") {
+			if (meta.isSerialize === true) {
+				config.data = serialize(config.data);
+			}
+			if (!config.headers["Content-Type"]) {
+				config.headers["Content-Type"] = "application/json";
+			}
 		}
 		return config;
 	},

@@ -111,7 +111,7 @@ export default {
 					name: "流程审批",
 					icon: "/static/icon/index/icon_approve.png",
 					color: "#16ae7d",
-					url: ""
+					url: "/pages/approve/approve"
 				},
 				{
 					name: "工单回访",
