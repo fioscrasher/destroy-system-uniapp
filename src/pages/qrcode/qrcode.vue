@@ -135,8 +135,10 @@ export default {
 				}
 			});
 		},
-		handleItemClick({ id, status }) {
-			uni.navigateTo({ url: `/pages/work/follow?id=${id}&status=${status}` });
+		handleItemClick({ id }) {
+			uni.navigateTo({
+				url: `print?id=${id}`
+			});
 		},
 		getList(page, params = {}) {
 			this.loading = true;

@@ -1,65 +1,43 @@
 <template>
-	<view class="work-wrap">
+	<view class="video-wrap">
 		<tui-sticky :scrollTop="scrollTop" stickyHeight="90rpx">
 			<template v-slot:header>
-				<tui-dropdown-list :show="dropdownShow" :top="94" :height="400">
-					<template v-slot:selectionbox>
-						<view class="work-search">
-							<uni-search-bar
-								@confirm="handleSearch"
-								v-model="searchValue"
-								placeholder="搜索工单编号或者客户名称"
-								class="work-search-input"
-							></uni-search-bar>
-							<tui-button
-								class="work-search-category"
-								width="90rpx"
-								shape="rightAngle"
-								:size="24"
-								@click="dropdownShow = !dropdownShow"
-							>
-								<tui-icon name="category" color="#ffffff" :size="24"></tui-icon>
-							</tui-button>
-						</view>
-					</template>
-					<template v-slot:dropdownbox>
-						<view class="work-search-panel">
-							<uni-data-checkbox
-								mode="button"
-								v-model="value"
-								:localdata="range"
-								@change="change"
-							></uni-data-checkbox>
-						</view>
-					</template>
-				</tui-dropdown-list>
+				<uni-search-bar
+					@confirm="handleSearch"
+					v-model="searchValue"
+					placeholder="搜索工单编号"
+					class="video-search"
+				></uni-search-bar>
 			</template>
 		</tui-sticky>
-		<view class="work-list">
-			<template v-for="item in workList">
-				<view class="work-list-item">
-					<uni-card :title="item.title" @click="handleItemClick(item)">
+		<view class="video-list">
+			<template v-for="item in videoList">
+				<view class="video-list-item">
+					<uni-card :title="item.title" @click="handleItemClick(item.filePath)">
 						<template v-slot:header>
-							<view class="work-list-item-header">
+							<view class="video-list-item-header">
 								<text>{{ item.title }}</text>
 								<tui-tag size="20rpx" padding="12rpx">{{ item.tag }}</tui-tag>
 							</view>
 						</template>
-						<view class="work-list-item-content">
-							<uni-row>
-								<uni-col :span="24">
-									<view>
-										工单编号：{{ item.id }}
-										<text class="link" @click.stop="handleCopy(item.id)"
-											>复制</text
-										>
-									</view>
-									<view>客户：{{ item.realName }}</view>
-									<view>处理人：{{ item.handleUsername }}</view>
-									<view>创建时间：{{ item.createTime }}</view>
-									<view>更新时间：{{ item.updateTime }}</view>
-								</uni-col>
-							</uni-row>
+						<view class="video-list-item-content">
+							<view class="video-list-item-text">
+								<text
+									>工单编号：{{ item.workId > 0 ? item.workId : "暂无" }}</text
+								>
+								<text
+									class="link"
+									@click.stop="handleCopy(item.workId)"
+									v-if="item.workId > 0"
+									>复制</text
+								>
+							</view>
+							<view class="video-list-item-text">
+								<text>处理人：{{ item.handleUsername }}</text>
+							</view>
+							<view class="video-list-item-text">
+								<text>上传时间：{{ item.createTime }}</text>
+							</view>
 						</view>
 					</uni-card>
 				</view>
@@ -74,55 +52,34 @@
 </template>
 
 <script>
-import { getList } from "@/api/work";
+import { getList } from "@/api/video";
 
 export default {
 	components: {},
 	data: () => ({
+		loading: false,
 		searchValue: "",
 		scrollTop: 0,
-		dropdownShow: false,
-		value: 0,
-		range: [
-			{ value: 0, text: "全部" },
-			{ value: 1, text: "打包" },
-			{ value: 2, text: "运输" },
-			{ value: 3, text: "过磅" },
-			{ value: 4, text: "入库" },
-			{ value: 5, text: "出库" },
-			{ value: 6, text: "销毁" },
-			{ value: 7, text: "完成" }
-		],
-		workList: [],
+		videoList: [],
 		page: {
 			pageSize: 10,
 			currentPage: 1,
 			total: 0,
 			totalPages: 1
 		},
-		query: {
-			status: null
-		},
-		loading: false
+		query: {}
 	}),
 	computed: {},
 	methods: {
-		handleSearch(e) {
-			console.log(e);
-		},
-		change({ detail }) {
-			if (detail.value > 0) {
-				this.query.status = detail.value;
-			} else {
-				this.query.status = null;
-			}
+		handleSearch() {
+			this.query.workId = this.searchValue;
 			this.page = {
 				pageSize: 10,
 				currentPage: 1,
 				total: 0,
 				totalPages: 1
 			};
-			this.workList = [];
+			this.videoList = [];
 			this.getList(this.page);
 		},
 		handleCopy(text) {
@@ -135,8 +92,8 @@ export default {
 				}
 			});
 		},
-		handleItemClick({ id, status }) {
-			uni.navigateTo({ url: `/pages/work/follow?id=${id}&status=${status}` });
+		handleItemClick(url) {
+			uni.navigateTo({ url: "preview?url=" + encodeURIComponent(url) });
 		},
 		getList(page, params = {}) {
 			this.loading = true;
@@ -176,9 +133,22 @@ export default {
 							item.tag = "";
 							break;
 					}
-					item.title = "涉敏销毁订单";
+					switch (item.videoType) {
+						case 0:
+							item.title = "原始视频";
+							break;
+						case 1:
+							item.title = "裁剪视频";
+							break;
+						case 2:
+							item.title = "合成视频";
+							break;
+						default:
+							item.title = "";
+							break;
+					}
 				});
-				this.workList = this.workList.concat(records);
+				this.videoList = this.videoList.concat(records);
 				this.loading = false;
 			});
 		}
@@ -205,7 +175,7 @@ export default {
 			total: 0,
 			totalPages: 1
 		};
-		this.workList = [];
+		this.videoList = [];
 		this.getList(this.page);
 		uni.stopPullDownRefresh();
 	},
@@ -227,21 +197,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.work-wrap {
-	.work-search {
+.video-wrap {
+	background-color: #eeeeee;
+	.video-search {
 		background-color: #ffffff;
 		box-shadow: 0 0 5px #ccc;
-		display: flex;
-		.work-search-input {
-			flex-grow: 1;
-		}
 	}
-	.work-search-panel {
-		background-color: #ffffff;
-		border: 1px solid #eeeeee;
-		padding: 20rpx;
-	}
-	.work-list {
+	.video-list {
 		padding-bottom: 20rpx;
 		&-item {
 			margin-top: 20rpx;
@@ -256,6 +218,11 @@ export default {
 			&-content {
 				font-size: 24rpx;
 				line-height: 36rpx;
+			}
+			&-text {
+				display: flex;
+				align-items: center;
+				height: 50rpx;
 			}
 		}
 	}

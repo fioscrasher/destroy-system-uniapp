@@ -3,13 +3,9 @@ import store from "@/store/";
 import { Base64 } from "js-base64";
 import { getToken } from "@/util/auth";
 import { serialize } from "@/util/util";
+import { baseUrl } from "@/config/env";
 
-// #ifdef APP-PLUS
-axios.defaults.baseURL = "http://114.96.76.108:8082/api";
-// #endif
-// #ifndef APP-PLUS
-axios.defaults.baseURL = "/api";
-// #endif
+axios.defaults.baseURL = baseUrl;
 
 //默认超时时间
 axios.defaults.timeout = 10000;

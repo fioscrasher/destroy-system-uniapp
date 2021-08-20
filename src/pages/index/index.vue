@@ -105,7 +105,7 @@ export default {
 					name: "出入库管理",
 					icon: "/static/icon/index/icon_storage.png",
 					color: "#ff8c12",
-					url: ""
+					url: "/pages/stock/stock"
 				},
 				{
 					name: "流程审批",
@@ -117,13 +117,13 @@ export default {
 					name: "工单回访",
 					icon: "/static/icon/index/icon_feedback.png",
 					color: "#ff8c12",
-					url: ""
+					url: "/pages/feedback/feedback"
 				},
 				{
 					name: "二维码",
 					icon: "/static/icon/index/icon_qrcode.png",
 					color: "#16ae7d",
-					url: ""
+					url: "/pages/qrcode/qrcode"
 				}
 			],
 			gpsSwitch: false,
@@ -139,13 +139,13 @@ export default {
 					name: "销毁证明",
 					icon: "/static/icon/index/icon_report.png",
 					color: "#fe735c",
-					url: ""
+					url: "/pages/cert/cert"
 				},
 				{
 					name: "视频管理",
 					icon: "/static/icon/index/icon_video.png",
 					color: "#ff8c12",
-					url: ""
+					url: "/pages/video/video"
 				}
 			],
 			orderStatus: [
