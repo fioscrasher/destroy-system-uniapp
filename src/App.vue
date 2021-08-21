@@ -53,4 +53,7 @@ export default {
 body {
 	background-color: #eeeeee;
 }
+.tui-bottom-navigation{
+  z-index: 995 !important;
+}
 </style>

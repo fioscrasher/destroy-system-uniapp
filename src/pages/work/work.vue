@@ -107,8 +107,16 @@ export default {
 	}),
 	computed: {},
 	methods: {
-		handleSearch(e) {
-			console.log(e);
+		handleSearch() {
+      this.query.keyword = this.searchValue;
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.workList = [];
+			this.getList(this.page);
 		},
 		change({ detail }) {
 			if (detail.value > 0) {

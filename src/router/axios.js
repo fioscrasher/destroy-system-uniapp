@@ -1,4 +1,9 @@
+// #ifdef  H5
+import axios from "axios";
+// #endif
+// #ifndef  H5
 import axios from "axios-miniprogram";
+// #endif
 import store from "@/store/";
 import { Base64 } from "js-base64";
 import { getToken } from "@/util/auth";

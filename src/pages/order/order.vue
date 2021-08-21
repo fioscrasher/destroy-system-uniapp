@@ -13,7 +13,7 @@
 		<view class="order-list">
 			<template v-for="item in orderList">
 				<view class="order-list-item">
-					<uni-card :title="item.title" @click="handleItemClick()">
+					<uni-card :title="item.title" @click="handleItemClick(item)">
 						<template v-slot:header>
 							<view class="order-list-item-header">
 								<text>{{ item.title }}</text>
@@ -88,7 +88,15 @@ export default {
 	computed: {},
 	methods: {
 		handleSearch(e) {
-			console.log(e);
+			this.query.keyword = this.searchValue;
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.orderList = [];
+			this.getList(this.page);
 		},
 		handleCopy(text) {
 			uni.setClipboardData({
@@ -100,8 +108,11 @@ export default {
 				}
 			});
 		},
-		handleItemClick() {
-			console.log(123);
+		handleItemClick(item) {
+			this.$store.commit("SET_ORDER_ITEM", item);
+			uni.navigateTo({
+				url: `detail`
+			});
 		},
 		getList(page, params = {}) {
 			this.loading = true;
@@ -151,6 +162,16 @@ export default {
 	// 页面周期函数--监听页面加载
 	onLoad() {
 		this.getList(this.page);
+		uni.$on("order", () => {
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.orderList = [];
+			this.getList(this.page);
+		});
 	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
@@ -200,8 +221,8 @@ export default {
 		padding-bottom: 20rpx;
 		&-item {
 			margin-top: 20rpx;
-      &-header {
-        color: #666666;
+			&-header {
+				color: #666666;
 				font-size: 34rpx;
 				width: 100%;
 				display: flex;

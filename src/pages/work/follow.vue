@@ -11,9 +11,7 @@
 		<view class="follow-info">
 			<view class="follow-info-title">
 				<text>工单基本信息</text>
-				<tui-tag size="22rpx" padding="12rpx">{{
-					items[status - 1].title
-				}}</tui-tag>
+				<tui-tag size="22rpx" padding="12rpx">{{ items[index].title }}</tui-tag>
 			</view>
 			<view class="follow-info-content">
 				<view class="follow-info-content-item">
@@ -73,6 +71,11 @@
 				/>
 			</template>
 		</view>
+		<tui-bottom-navigation
+			:itemList="itemList"
+			@click="handleFollowForm"
+			v-if="[1, 2, 3, 6].indexOf(basicInfo.status) >= 0"
+		></tui-bottom-navigation>
 	</div>
 </template>
 
@@ -96,14 +99,6 @@ export default {
 				value: 3
 			},
 			{
-				title: "入库",
-				value: 4
-			},
-			{
-				title: "出库",
-				value: 5
-			},
-			{
 				title: "销毁",
 				value: 6
 			},
@@ -115,9 +110,11 @@ export default {
 		activeSteps: 1,
 		workId: null,
 		status: 1,
+		index: 1,
 		qrCodePackageId: [],
 		workOperations: [],
-		basicInfo: {}
+		basicInfo: {},
+		itemList: [{ text: "添加跟进" }]
 	}),
 	computed: {
 		previewImages() {
@@ -151,6 +148,10 @@ export default {
 			});
 		},
 		handleStepClick(e) {
+			if (Number(this.basicInfo.status) < Number(this.items[e.index].value)) {
+				return false;
+			}
+			this.index = e.index;
 			this.status = this.items[e.index].value;
 			this.getDetails();
 		},
@@ -177,13 +178,20 @@ export default {
 						this.qrCodePackageId = data.qrCodePackageId;
 						this.workOperations = data.workOperations;
 
-						this.activeSteps = this.basicInfo.status - 1;
+						this.items.forEach((item, index) => {
+							if (item.value == this.basicInfo.status) {
+								this.activeSteps = index;
+							}
+						});
 						uni.hideLoading();
 					}
 				})
 				.catch(() => {
 					uni.hideLoading();
 				});
+		},
+		handleFollowForm() {
+			uni.navigateTo({ url: "form?id=" + this.workId });
 		}
 	},
 	watch: {},
@@ -191,10 +199,19 @@ export default {
 	// 页面周期函数--监听页面加载
 	onLoad(option) {
 		this.workId = option.id;
-		this.activeSteps = option.status - 1;
+		this.items.forEach((item, index) => {
+			if (item.value == option.status) {
+				this.activeSteps = index;
+				this.index = index;
+			}
+		});
 		this.status = option.status;
 
 		this.getDetails();
+
+		uni.$on("follow", () => {
+			this.getDetails();
+		});
 	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
@@ -219,6 +236,7 @@ export default {
 
 <style lang="scss" scoped>
 .follow-wrap {
+	padding-bottom: 100rpx;
 	.follow-steps {
 		background-color: #ffffff;
 		padding: 40rpx 10rpx;

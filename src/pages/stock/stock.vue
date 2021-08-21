@@ -13,10 +13,10 @@
 		<view class="stock-list">
 			<template v-for="item in stockList">
 				<view class="stock-list-item">
-					<uni-card :title="item.title" @click="handleItemClick()">
+					<uni-card :title="item.title" @click="handleItemClick(item)">
 						<template v-slot:header>
 							<view class="stock-list-item-header">
-								<text>{{ item.dataType }}</text>
+								<text>{{ item.title }}</text>
 								<tui-tag size="20rpx" padding="12rpx" v-if="current === 0">{{
 									item.status
 								}}</tui-tag>
@@ -35,6 +35,9 @@
 								>
 							</view>
 							<view class="stock-list-item-text">
+								<text>资料类型：{{ item.dataType }}</text>
+							</view>
+							<view class="stock-list-item-text">
 								<text>打包总数：{{ item.total }}</text>
 							</view>
 							<view class="stock-list-item-text">
@@ -46,7 +49,7 @@
 							<view class="stock-list-item-text" v-if="current === 0">
 								<text>入库时间：{{ item.inStockTime }}</text>
 							</view>
-              <view class="stock-list-item-text" v-if="current === 1">
+							<view class="stock-list-item-text" v-if="current === 1">
 								<text>出库人员：{{ item.outStockUser }}</text>
 							</view>
 							<view class="stock-list-item-text" v-if="current === 1">
@@ -134,8 +137,15 @@ export default {
 			this.stockList = [];
 			this.getList(this.page);
 		},
-		handleItemClick() {
-			console.log(123);
+		handleItemClick(item) {
+			if (item.status === "已出库") {
+				uni.showToast({
+					title: "已出库",
+					icon: "error"
+				});
+				return;
+			}
+			uni.navigateTo({ url: "/pages/work/form?id=" + item.workId });
 		},
 		getList(page, params = {}) {
 			this.loading = true;
@@ -179,6 +189,17 @@ export default {
 	// 页面周期函数--监听页面加载
 	onLoad() {
 		this.getList(this.page);
+
+		uni.$on("follow", () => {
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.stockList = [];
+			this.getList(this.page);
+		});
 	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},

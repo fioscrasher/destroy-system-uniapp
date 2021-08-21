@@ -44,7 +44,7 @@
 				</view>
 			</view>
 			<view class="position-wrap">
-				<navigator>
+				<navigator url="/pages/map/map">
 					<text>GPS轨迹监控</text>
 				</navigator>
 				<switch

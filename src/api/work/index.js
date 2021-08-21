@@ -1,4 +1,5 @@
 import request from "@/router/axios";
+import uploader from "@/router/upload";
 
 export const getList = (current, size, params) => {
 	return request({
@@ -18,4 +19,16 @@ export const followDetail = params => {
 		method: "get",
 		params
 	});
+};
+
+export const followSubmit = data => {
+	return request({
+		url: "/work/submit",
+		method: "post",
+		data
+	});
+};
+
+export const upload = data => {
+	return uploader("/blade-resource/oss/endpoint/put-file", data);
 };

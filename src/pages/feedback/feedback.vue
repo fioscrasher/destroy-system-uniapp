@@ -5,7 +5,7 @@
 				<uni-search-bar
 					@confirm="handleSearch"
 					v-model="searchValue"
-					placeholder="搜索订单编号或者客户名称"
+					placeholder="搜索工单编号"
 					class="feedback-search"
 				></uni-search-bar>
 			</template>
@@ -13,7 +13,7 @@
 		<view class="feedback-list">
 			<template v-for="item in feedbackList">
 				<view class="feedback-list-item">
-					<uni-card :title="item.title" @click="handleItemClick()">
+					<uni-card :title="item.title" @click="handleItemClick(item)">
 						<template v-slot:header>
 							<view class="feedback-list-item-header">
 								<text>{{ item.title }}</text>
@@ -86,7 +86,15 @@ export default {
 	computed: {},
 	methods: {
 		handleSearch(e) {
-			console.log(e);
+			this.query.workId = this.searchValue;
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.feedbackList = [];
+			this.getList(this.page);
 		},
 		handleCopy(text) {
 			uni.setClipboardData({
@@ -98,8 +106,11 @@ export default {
 				}
 			});
 		},
-		handleItemClick() {
-			console.log(123);
+		handleItemClick(item) {
+			this.$store.commit("SET_FEEDBACK_ITEM", item);
+			uni.navigateTo({
+				url: `detail`
+			});
 		},
 		getList(page, params = {}) {
 			this.loading = true;
@@ -125,6 +136,16 @@ export default {
 	// 页面周期函数--监听页面加载
 	onLoad() {
 		this.getList(this.page);
+    uni.$on("approve", () => {
+			this.page = {
+				pageSize: 10,
+				currentPage: 1,
+				total: 0,
+				totalPages: 1
+			};
+			this.feedbackList = [];
+			this.getList(this.page);
+		});
 	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},

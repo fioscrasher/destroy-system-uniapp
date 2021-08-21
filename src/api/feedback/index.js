@@ -11,3 +11,19 @@ export const getList = (current, size, params) => {
     }
   });
 };
+
+export const submitFeedback = data => {
+  return request({
+    url: "/workReturn/evaluateRegister",
+    method: "post",
+    data
+  });
+};
+
+export const submitReview = data => {
+  return request({
+    url: "/workReturn/returnRegister",
+    method: "post",
+    data
+  });
+};
