@@ -2,7 +2,7 @@
 <template>
 	<div class="map-wrap">
 		<map
-			id="map-container"
+			class="map-container"
 			:longitude="longitude"
 			:latitude="latitude"
 			:show-compass="true"
@@ -54,17 +54,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .map-wrap {
 	position: relative;
-	#map-container {
+}
+
+.map-container {
 		position: fixed;
 		top: 0;
 		right: 0;
 		bottom: 0;
 		left: 0;
 		width: 750rpx;
-		min-height: 1300rpx;
 	}
-}
 </style>

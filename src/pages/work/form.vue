@@ -101,7 +101,7 @@ export default {
 	data: () => ({
 		workId: null,
 		itemList: [{ text: "提交" }],
-		qrCodePackageId: [],
+		qrCodePackageId: [1429119520468054017],
 		workOperations: [],
 		basicInfo: {},
 		scanCode: [],
@@ -137,6 +137,8 @@ export default {
 		handleScan() {
 			uni.scanCode({
 				success: res => {
+          console.log(res);
+          console.log(typeof(res.result))
 					if (this.scanCode.indexOf(res.result) >= 0) {
 						uni.showToast({
 							title: "已扫描此码",
@@ -144,7 +146,7 @@ export default {
 						});
 					}
 					if (this.qrCodePackageId.indexOf(res.result) >= 0) {
-						scanCode.push(res.result);
+						this.scanCode.push(res.result);
 						uni.showToast({
 							title: "扫描成功",
 							icon: "success"
@@ -155,7 +157,10 @@ export default {
 							icon: "error"
 						});
 					}
-				}
+				},
+        fail: res=>{
+          console.log(res)
+        }
 			});
 		},
 		getDetails() {
@@ -198,7 +203,7 @@ export default {
 						});
 						uni.hideLoading();
 					} else {
-            uni.hideLoading();
+						uni.hideLoading();
 						uni.showToast({
 							title: "上传出错",
 							icon: "error",
@@ -226,7 +231,7 @@ export default {
 						});
 						uni.hideLoading();
 					} else {
-            uni.hideLoading();
+						uni.hideLoading();
 						uni.showToast({
 							title: "上传出错",
 							icon: "error",
