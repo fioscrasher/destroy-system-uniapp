@@ -6,8 +6,8 @@
 			:longitude="longitude"
 			:latitude="latitude"
 			:show-compass="true"
-      :enable-poi="true"
-      :enable-building="true"
+			:enable-poi="true"
+			:enable-building="true"
 		/>
 	</div>
 </template>
@@ -60,11 +60,12 @@ export default {
 }
 
 .map-container {
-		position: fixed;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		width: 750rpx;
-	}
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 750rpx;
+  height: 100%;
+}
 </style>
