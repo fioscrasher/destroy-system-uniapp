@@ -108,6 +108,22 @@
                     }
                 }
             }
+        },
+        "nativePlugins" : {
+            "liwang-shangmi" : {
+                "__plugin_info__" : {
+                    "name" : "商米V2Pro打印",
+                    "description" : "商米V2Pro打印base64格式图片",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=3654",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "3654",
+                    "parameters" : {}
+                }
+            }
         }
     },
     /* SDK配置 */

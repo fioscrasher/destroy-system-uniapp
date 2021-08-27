@@ -57,6 +57,9 @@
 
 <script>
 import { getList } from "@/api/qrcode";
+// #ifdef  APP-PLUS
+let shangMi = uni.requireNativePlugin("liwang_shangmi");
+// #endif
 
 export default {
 	components: {},
@@ -72,7 +75,8 @@ export default {
 		},
 		query: {
 			workId: null
-		}
+		},
+		printStatus: {}
 	}),
 	computed: {},
 	methods: {
@@ -97,7 +101,46 @@ export default {
 				this.loading = false;
 			});
 		},
-		handlePrint(item) {}
+		handlePrint(item) {
+			// #ifdef  APP-PLUS
+			if (this.printStatus.code == 200) {
+				uni.request({
+					url: item.qrCodePath,
+					method: "GET",
+					responseType: "arraybuffer",
+					success: res => {
+						let base64 = wx.arrayBufferToBase64(res.data);
+						base64 = "data:image/png;base64," + base64;
+
+						shangMi.printByBase({ base: base64 }, res => {
+							if (res.code == 200) {
+								uni.showToast({
+									title: "打印成功",
+									icon: "success"
+								});
+							} else {
+								uni.showToast({
+									title: res.msg,
+									icon: "none"
+								});
+							}
+						});
+					},
+					fail: () => {
+						uni.showToast({
+							title: "图片解析失败！",
+							icon: "error"
+						});
+					}
+				});
+			} else {
+				uni.showToast({
+					title: "打印机连接失败，请重新进入页面后尝试",
+					icon: "none"
+				});
+			}
+			// #endif
+		}
 	},
 	watch: {},
 
@@ -107,7 +150,11 @@ export default {
 		this.getList(this.page);
 	},
 	// 页面周期函数--监听页面初次渲染完成
-	onReady() {},
+	onReady() {
+		// #ifdef  APP-PLUS
+		this.printStatus = shangMi.SMInit();
+		// #endif
+	},
 	// 页面周期函数--监听页面显示(not-nvue)
 	onShow() {},
 	// 页面周期函数--监听页面隐藏
@@ -154,10 +201,10 @@ export default {
 				align-items: center;
 				height: 50rpx;
 			}
-      &-image{
-        width: 100%;
-        height: 200rpx;
-      }
+			&-image {
+				width: 100%;
+				height: 200rpx;
+			}
 			&-footer {
 				display: flex;
 				justify-content: flex-end;
