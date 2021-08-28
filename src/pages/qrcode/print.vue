@@ -58,7 +58,7 @@
 <script>
 import { getList } from "@/api/qrcode";
 // #ifdef  APP-PLUS
-let shangMi = uni.requireNativePlugin("liwang_shangmi");
+let shangMi = uni.requireNativePlugin("liwang-shangmi");
 // #endif
 
 export default {
@@ -103,6 +103,7 @@ export default {
 		},
 		handlePrint(item) {
 			// #ifdef  APP-PLUS
+      console.log(this.printStatus)
 			if (this.printStatus.code == 200) {
 				uni.request({
 					url: item.qrCodePath,
@@ -135,7 +136,7 @@ export default {
 				});
 			} else {
 				uni.showToast({
-					title: "打印机连接失败，请重新进入页面后尝试",
+					title: this.printStatus.msg,
 					icon: "none"
 				});
 			}
