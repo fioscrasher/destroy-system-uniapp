@@ -158,6 +158,7 @@ export default {
 	},
 	onLoad() {
 		this.getStatusCount();
+		this.gpsSwitch = this.$store.state.device.positionAvailable;
 	},
 	computed: {
 		...mapState({
@@ -166,8 +167,8 @@ export default {
 	},
 	methods: {
 		gpsSwitchChange({ detail }) {
-			console.log(detail);
 			this.gpsSwitch = detail.value;
+      this.$store.commit("SET_POSITION_AVAILABLE", detail.value);
 		},
 		getStatusCount() {
 			apiStatusCount().then(res => {

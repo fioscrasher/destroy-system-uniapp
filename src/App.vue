@@ -1,18 +1,21 @@
 <script>
-import { calcDate } from "@/util/date.js";
+import { calcDate, dateFormat } from "@/util/date.js";
 import { getStore } from "@/util/store.js";
 import { validatenull } from "@/util/validate";
+import { uploadPosition } from "@/api/device";
 
 export default {
 	data() {
 		return {
 			//刷新token锁
-			refreshLock: false
+			refreshLock: false,
+			positionInterval: null
 		};
 	},
 	onLaunch: function() {
 		console.log("App Launch");
-    this.refreshToken();
+		this.refreshToken();
+		this.devicePosition();
 	},
 	onShow: function() {
 		console.log("App Show");
@@ -43,6 +46,67 @@ export default {
 						});
 				}
 			}, 10000);
+		},
+		// 设备定位
+		devicePosition() {
+			console.log(
+				"position status:" + this.$store.state.device.positionAvailable
+			);
+			this.positionInterval = setInterval(() => {
+				if (this.$store.state.device.positionAvailable) {
+					uni.getLocation({
+						type: "gcj02",
+						success: res => {
+							let arr = this.$store.state.device.positionData;
+							if (arr.length >= 3) {
+								this.uploadPosition(arr);
+								arr = [];
+							}
+							res.createTime = dateFormat(new Date());
+							arr.push(res);
+							this.$store.commit("SET_POSITION_DATA", arr);
+							console.log(arr);
+						}
+					});
+				} else {
+					let arr = this.$store.state.device.positionData;
+					if (arr.length > 0) {
+						this.uploadPosition(arr);
+						this.$store.commit("SET_POSITION_DATA", []);
+					}
+				}
+			}, 15000);
+		},
+		uploadPosition(arr) {
+			let temp = [];
+			arr.forEach(item => {
+				temp.push({
+					createTime: item.createTime,
+					latitude: item.latitude,
+					longitude: item.longitude,
+					speed: item.speed || 0
+				});
+			});
+			uploadPosition({ locations: temp })
+				.then(res => {
+					console.log(res);
+				})
+				.catch(() => {
+					uni.showToast({
+						title: "定位出错，请重新打开首页定位开关后再尝试",
+						icon: "none",
+						mask: true
+					});
+					clearInterval(this.positionInterval);
+					this.$store.commit("SET_POSITION_AVAILABLE", false);
+				});
+		}
+	},
+	watch: {
+		"$store.state.device.positionAvailable": function() {
+			if (!this.positionInterval) {
+				this.devicePosition();
+			}
 		}
 	}
 };
@@ -53,7 +117,7 @@ export default {
 body {
 	background-color: #eeeeee;
 }
-.tui-bottom-navigation{
-  z-index: 995 !important;
+.tui-bottom-navigation {
+	z-index: 995 !important;
 }
 </style>

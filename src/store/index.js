@@ -4,6 +4,7 @@ import user from "./modules/user";
 import approve from "./modules/approve";
 import feedback from "./modules/feedback";
 import order from "./modules/order";
+import device from "./modules/device";
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
@@ -11,7 +12,8 @@ const store = new Vuex.Store({
 		user,
 		approve,
 		feedback,
-    order
+		order,
+		device
 	}
 });
 

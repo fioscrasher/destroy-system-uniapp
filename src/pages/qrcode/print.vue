@@ -111,7 +111,7 @@ export default {
 					responseType: "arraybuffer",
 					success: res => {
 						let base64 = wx.arrayBufferToBase64(res.data);
-						base64 = "data:image/png;base64," + base64;
+						// base64 = "data:image/png;base64," + base64;
 
 						shangMi.printByBase({ base: base64 }, res => {
 							if (res.code == 200) {
