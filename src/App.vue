@@ -59,6 +59,13 @@ export default {
 						success: res => {
 							console.log("position success：", res);
 							let arr = this.$store.state.device.positionData;
+							if (arr.length > 0)
+								if (
+									arr[arr.length - 1].longitude == res.longitude &&
+									arr[arr.length - 1].latitude == res.latitude
+								) {
+									return false;
+								}
 							if (arr.length >= 6) {
 								this.uploadPosition(arr);
 								arr = [];

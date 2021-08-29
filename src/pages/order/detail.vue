@@ -31,13 +31,7 @@
 				</view>
 
 				<tui-divider :height="20"></tui-divider>
-				<view class="order-info-item">
-					资料类型：
-					<template v-if="info.dataType === 1">文件</template>
-					<template v-else-if="info.dataType === 2">资料</template>
-					<template v-else-if="info.dataType === 3">凭证</template>
-					<template v-else-if="info.dataType === 4">档案</template>
-				</view>
+				<view class="order-info-item"> 资料类型：{{ info.dataType }} </view>
 				<view class="order-info-item">
 					预估重量：
 					<template v-if="info.estimateWeight === 1">1吨以下</template>

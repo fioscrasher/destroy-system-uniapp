@@ -19,6 +19,9 @@
             "Maps" : {},
             "Geolocation" : {}
         },
+        "compatible" : {
+            "ignoreVersion" : true
+        },
         /* 模块配置 */
         "distribute" : {
             /* 应用发布信息 */
@@ -154,7 +157,7 @@
             "port" : 1888,
             "proxy" : {
                 "/api" : {
-                    "target" : "http://114.96.76.108:8082/api",
+                    "target" : "https://pro.gznhhj.com/api",
                     "ws" : true,
                     "pathRewrite" : {
                         "^/api" : "/"
