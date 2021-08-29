@@ -7,3 +7,15 @@ export const uploadPosition = data => {
 		data
 	});
 };
+
+export const getPosition = (current, size, params) => {
+	return request({
+		url: "/location/page",
+		method: "get",
+		params: {
+			...params,
+			current,
+			size
+		}
+	});
+};

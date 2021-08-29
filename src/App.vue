@@ -49,16 +49,17 @@ export default {
 		},
 		// 设备定位
 		devicePosition() {
-			console.log(
-				"position status:" + this.$store.state.device.positionAvailable
-			);
 			this.positionInterval = setInterval(() => {
+				console.log(
+					"position status:" + this.$store.state.device.positionAvailable
+				);
 				if (this.$store.state.device.positionAvailable) {
 					uni.getLocation({
 						type: "gcj02",
 						success: res => {
+							console.log("position success：", res);
 							let arr = this.$store.state.device.positionData;
-							if (arr.length >= 3) {
+							if (arr.length >= 6) {
 								this.uploadPosition(arr);
 								arr = [];
 							}
@@ -87,7 +88,7 @@ export default {
 					speed: item.speed || 0
 				});
 			});
-			uploadPosition({ locations: temp })
+			uploadPosition(temp)
 				.then(res => {
 					console.log(res);
 				})
