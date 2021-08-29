@@ -103,7 +103,7 @@ export default {
 		},
 		handlePrint(item) {
 			// #ifdef  APP-PLUS
-      console.log(this.printStatus)
+			console.log(this.printStatus);
 			if (this.printStatus.code == 200) {
 				uni.request({
 					url: item.qrCodePath,
@@ -127,10 +127,10 @@ export default {
 							}
 						});
 					},
-					fail: () => {
+					fail: error => {
 						uni.showToast({
-							title: "图片解析失败！",
-							icon: "error"
+							title: error,
+							icon: "none"
 						});
 					}
 				});
