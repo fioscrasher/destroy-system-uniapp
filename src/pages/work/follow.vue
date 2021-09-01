@@ -74,7 +74,7 @@
 		<tui-bottom-navigation
 			:itemList="itemList"
 			@click="handleFollowForm"
-			v-if="[1, 2, 3, 6].indexOf(basicInfo.status) >= 0"
+			v-if="[1, 2, 3, 4, 5, 6].indexOf(basicInfo.status) >= 0"
 		></tui-bottom-navigation>
 	</div>
 </template>
@@ -97,6 +97,14 @@ export default {
 			{
 				title: "过磅卸车",
 				value: 3
+			},
+			{
+				title: "入库",
+				value: 4
+			},
+			{
+				title: "出库",
+				value: 5
 			},
 			{
 				title: "销毁",

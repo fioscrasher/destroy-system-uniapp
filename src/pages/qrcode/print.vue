@@ -129,8 +129,8 @@ export default {
 					},
 					fail: error => {
 						uni.showToast({
-							title: error,
-							icon: "none"
+							title: "下载图片失败",
+							icon: "error"
 						});
 					}
 				});
