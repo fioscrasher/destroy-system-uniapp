@@ -138,14 +138,14 @@ export default {
 			this.getList(this.page);
 		},
 		handleItemClick(item) {
-			if (item.status === "已出库") {
-				uni.showToast({
-					title: "已出库",
-					icon: "error"
-				});
-				return;
-			}
-			uni.navigateTo({ url: "/pages/work/form?id=" + item.workId });
+			// if (item.status === "已出库") {
+			// 	uni.showToast({
+			// 		title: "已出库",
+			// 		icon: "error"
+			// 	});
+			// 	return;
+			// }
+			// uni.navigateTo({ url: "/pages/work/form?id=" + item.workId });
 		},
 		getList(page, params = {}) {
 			this.loading = true;

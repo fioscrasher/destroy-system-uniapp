@@ -61,7 +61,7 @@
     "@vue/shared": "^3.2.6",
     "axios": "^0.21.1",
     "axios-miniprogram": "^2.0.0-rc-2",
-    "core-js": "^3.16.3",
+    "core-js": "^3.16.4",
     "flyio": "^0.6.2",
     "js-base64": "^3.6.1",
     "js-md5": "^0.7.3",
@@ -91,7 +91,7 @@
     "miniprogram-api-typings": "^3.4.3",
     "node-sass": "^6.0.1",
     "postcss-comment": "^2.0.0",
-    "sass": "^1.38.1",
+    "sass": "^1.38.2",
     "sass-loader": "^10.2.0",
     "vue-template-compiler": "^2.6.11"
   },
