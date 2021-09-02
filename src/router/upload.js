@@ -9,6 +9,7 @@ const upload = (url, filePath, formData = {}, name = "file") => {
 			filePath,
 			name: "file",
 			formData,
+      timeout: 300000,
 			header: {
 				Authorization: `Basic ${Base64.encode(`saber:saber_secret`)}`,
 				"Blade-Auth": "bearer " + getToken()
