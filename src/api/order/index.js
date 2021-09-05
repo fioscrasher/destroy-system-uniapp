@@ -27,6 +27,20 @@ export const getPlates = () => {
 	});
 };
 
+export const getDrivers = () => {
+	return request({
+		url: "/blade-user/getDrivers",
+		method: "get"
+	});
+};
+
+export const getPorters = () => {
+	return request({
+		url: "/blade-user/getPorters",
+		method: "get"
+	});
+};
+
 export const sendOrder = data => {
 	return request({
 		url: "/order/dispatchOrder",

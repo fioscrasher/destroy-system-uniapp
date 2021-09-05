@@ -86,7 +86,7 @@
 					/>
 				</view>
 
-				<view class="order-info-form">
+				<view class="order-info-form" v-if="info.status === 0">
 					<view class="order-info-picker">
 						<picker
 							mode="selector"
@@ -96,7 +96,11 @@
 							@change="handlerChange"
 						>
 							<tui-button type="white"
-								>选择接单人员：{{ handlerList[handlerIndex].name }}</tui-button
+								>选择接单人员：{{
+									handlerList[handlerIndex]
+										? handlerList[handlerIndex].name
+										: ""
+								}}</tui-button
 							>
 						</picker>
 					</view>
@@ -109,9 +113,39 @@
 							@change="plateChange"
 						>
 							<tui-button type="white"
-								>选择物流车辆：{{ plateList[plateIndex].carNum }}</tui-button
+								>选择物流车辆：{{
+									plateList[plateIndex] ? plateList[plateIndex].carNum : ""
+								}}</tui-button
 							>
 						</picker>
+					</view>
+					<view class="order-info-picker">
+						<picker
+							mode="selector"
+							:range="driverList"
+							:value="driverIndex"
+							range-key="realName"
+							@change="driverChange"
+						>
+							<tui-button type="white"
+								>选择物流车辆：{{
+									driverList[driverIndex]
+										? driverList[driverIndex].realName
+										: ""
+								}}</tui-button
+							>
+						</picker>
+					</view>
+					<view class="order-info-picker">
+						<text class="subtitle">选择搬运员：</text>
+						<uni-data-checkbox
+							mode="tag"
+							:multiple="true"
+							v-model="porters"
+							:localdata="porterList"
+							@change="change"
+							:map="map"
+						></uni-data-checkbox>
 					</view>
 
 					<view class="order-info-form-button">
@@ -124,7 +158,13 @@
 </template>
 
 <script>
-import { sendOrder, getHandlers, getPlates } from "@/api/order";
+import {
+	sendOrder,
+	getHandlers,
+	getPlates,
+	getDrivers,
+	getPorters
+} from "@/api/order";
 
 export default {
 	components: {},
@@ -133,7 +173,12 @@ export default {
 		handlerList: [],
 		handlerIndex: 0,
 		plateList: [],
-		plateIndex: 0
+		plateIndex: 0,
+		driverList: [],
+		driverIndex: 0,
+		porters: [],
+		porterList: [],
+		map: { text: "realName", value: "id" }
 	}),
 	computed: {
 		previewImages() {
@@ -195,6 +240,40 @@ export default {
 				}
 			});
 		},
+		driverChange({ detail }) {
+			this.driverIndex = detail.value;
+		},
+		getDrivers() {
+			getDrivers().then(res => {
+				let { code, data, msg } = res.data;
+				if (code === 200) {
+					this.driverList = data;
+				} else {
+					uni.showToast({
+						title: msg,
+						icon: "error",
+						mask: true
+					});
+				}
+			});
+		},
+		change() {
+			console.log(this.porters);
+		},
+		getPorters() {
+			getPorters().then(res => {
+				let { code, data, msg } = res.data;
+				if (code === 200) {
+					this.porterList = data;
+				} else {
+					uni.showToast({
+						title: msg,
+						icon: "error",
+						mask: true
+					});
+				}
+			});
+		},
 		handleSubmit(e) {
 			console.log(e);
 			uni.showModal({
@@ -205,7 +284,9 @@ export default {
 						sendOrder({
 							orderId: this.info.id,
 							handleUserId: this.handlerList[this.handlerIndex].id,
-							carNum: this.plateList[this.plateIndex].carNum
+							carNum: this.plateList[this.plateIndex].carNum,
+							driver: this.driverList[this.driverIndex].id,
+							porters: this.porters.join(",")
 						}).then(res => {
 							let { code, msg } = res.data;
 							if (code === 200) {
@@ -237,6 +318,8 @@ export default {
 		this.info = this.$store.state.order.orderItem;
 		this.getHandlers();
 		this.getPlates();
+		this.getDrivers();
+		this.getPorters();
 	},
 	// 页面周期函数--监听页面初次渲染完成
 	onReady() {},
