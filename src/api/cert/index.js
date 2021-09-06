@@ -11,3 +11,11 @@ export const getList = (current, size, params) => {
 		}
 	});
 };
+
+export const update = data => {
+	return request({
+		url: "/certificate/update",
+		method: "post",
+		data
+	});
+};

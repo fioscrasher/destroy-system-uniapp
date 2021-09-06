@@ -41,10 +41,19 @@
 								>
 							</view>
 							<view class="cert-list-item-text">
-								<text>处理人：{{ item.handleUsername }}</text>
+								<text class="overlong-text"
+									>销毁人员：{{ item.destroyUsers }}</text
+								>
 							</view>
 							<view class="cert-list-item-text">
 								<text>下单时间：{{ item.createTime }}</text>
+							</view>
+							<view class="cert-list-item-text">
+								<text
+									>状态：{{
+										item.generateOrPreview == 1 ? "已生成" : "未生成"
+									}}</text
+								>
 							</view>
 						</view>
 					</uni-card>
@@ -60,7 +69,7 @@
 </template>
 
 <script>
-import { getList } from "@/api/cert";
+import { getList, update } from "@/api/cert";
 import { baseUrl } from "@/config/env";
 
 export default {
@@ -101,34 +110,66 @@ export default {
 				}
 			});
 		},
-		handleItemClick(item) {
-			uni.showLoading({
-				title: "加载中",
-				mask: true
-			});
-			uni.downloadFile({
-				url: baseUrl + "/certificate/pdfPreview?orderId=" + item.orderId,
-				success: function(res) {
-					if (res.statusCode === 200) {
-						let filePath = res.tempFilePath;
-						uni.openDocument({
-							filePath: filePath,
-							success: function(res) {
-								console.log("打开文档成功");
-							}
-						});
-					} else {
-						uni.showToast({
-							title: res.errMsg,
-							icon: "error",
-							mask: true
-						});
+		handleItemClick({ id, orderId, generateOrPreview }) {
+			if (generateOrPreview == 0) {
+				uni.showModal({
+					title: "提示",
+					content: "该销毁证明未生成，是否生成？",
+					success: res => {
+						if (res.confirm) {
+							update({
+								id,
+								generateOrPreview: 1
+							}).then(res => {
+								let { code } = res.data;
+								if (code === 200) {
+									uni.showToast({
+										title: "生成成功",
+										icon: "success",
+										mask: true
+									});
+									this.page = {
+										pageSize: 10,
+										currentPage: 1,
+										total: 0,
+										totalPages: 1
+									};
+									this.certList = [];
+									this.getList(this.page);
+								}
+							});
+						}
 					}
-				},
-				complete: function() {
-					uni.hideLoading();
-				}
-			});
+				});
+			} else {
+				uni.showLoading({
+					title: "加载中",
+					mask: true
+				});
+				uni.downloadFile({
+					url: baseUrl + "/certificate/pdfPreview?orderId=" + orderId,
+					success: function(res) {
+						if (res.statusCode === 200) {
+							let filePath = res.tempFilePath;
+							uni.openDocument({
+								filePath: filePath,
+								success: function(res) {
+									console.log("打开文档成功");
+								}
+							});
+						} else {
+							uni.showToast({
+								title: res.errMsg,
+								icon: "error",
+								mask: true
+							});
+						}
+					},
+					complete: function() {
+						uni.hideLoading();
+					}
+				});
+			}
 		},
 		getList(page, params = {}) {
 			this.loading = true;
