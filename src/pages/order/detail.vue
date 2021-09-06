@@ -143,7 +143,6 @@
 							:multiple="true"
 							v-model="porters"
 							:localdata="porterList"
-							@change="change"
 							:map="map"
 						></uni-data-checkbox>
 					</view>
@@ -256,9 +255,6 @@ export default {
 					});
 				}
 			});
-		},
-		change() {
-			console.log(this.porters);
 		},
 		getPorters() {
 			getPorters().then(res => {

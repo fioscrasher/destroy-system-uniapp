@@ -32,3 +32,11 @@ export const followSubmit = data => {
 export const upload = data => {
 	return uploader("/blade-resource/oss/endpoint/put-file", data);
 };
+
+export const destroyUserList = params => {
+	return request({
+		url: "/blade-user/getDestroyUsers",
+		method: "get",
+		params
+	});
+};

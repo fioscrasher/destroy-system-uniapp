@@ -5,6 +5,7 @@
 			:extra="'需确认数量：' + qrCodePackageId.length"
 			note="true"
 			:isFull="true"
+			v-if="basicInfo.status != 3"
 		>
 			<view class="follow-package">
 				<text class="tips" v-if="qrCodePackageId.length === 0"
@@ -51,14 +52,14 @@
 				title="上传视频"
 				:auto-upload="true"
 			/>
-			<view class="follow-form-time">
+			<!-- <view class="follow-form-time">
 				<tui-button type="white" :size="28" @click="handleTimeShow(1)"
 					>视频剪辑时间：{{ startTime }}</tui-button
 				>
-				<!-- <tui-button type="white" :size="28" @click="handleTimeShow(2)"
+				<tui-button type="white" :size="28" @click="handleTimeShow(2)"
 					>视频结束时间：{{ endTime }}</tui-button
-				> -->
-			</view>
+				>
+			</view> -->
 			<uni-easyinput
 				type="textarea"
 				v-model="remark"
@@ -75,6 +76,16 @@
 					<switch :checked="destroyNow" @change="" />
 					<text>是否直接销毁</text>
 				</view>
+			</template>
+			<template v-if="basicInfo.status == 6">
+				<text class="subtitle">选择销毁人员</text>
+				<uni-data-checkbox
+					mode="tag"
+					:multiple="true"
+					v-model="destroyUsers"
+					:localdata="destroyUserList"
+					:map="map"
+				></uni-data-checkbox>
 			</template>
 		</view>
 
@@ -94,14 +105,19 @@
 </template>
 
 <script>
-import { followDetail, upload, followSubmit } from "@/api/work";
+import {
+	followDetail,
+	upload,
+	followSubmit,
+	destroyUserList
+} from "@/api/work";
 
 export default {
 	components: {},
 	data: () => ({
 		workId: null,
 		itemList: [{ text: "提交" }],
-		qrCodePackageId: [1429119520468054017],
+		qrCodePackageId: [],
 		workOperations: [],
 		basicInfo: {},
 		scanCode: [],
@@ -111,12 +127,16 @@ export default {
 		},
 		uploadImages: [],
 		uploadVideos: [],
-		startTime: "00:00",
-		endTime: "00:00",
+		// startTime: "00:00",
+		// endTime: "00:00",
 		timeSelecter: null,
 		remark: "",
 		weight: null,
-		destroyNow: false
+		destroyNow: false,
+
+		destroyUserList: [],
+		destroyUsers: [],
+		map: { text: "realName", value: "id" }
 	}),
 	computed: {},
 	methods: {
@@ -127,18 +147,31 @@ export default {
 			this.timeSelecter = type;
 			this.$refs.dateTime.show();
 		},
-		change: function(e) {
-			if (this.timeSelecter === 1) {
-				this.startTime = e.result;
-			} else if (this.timeSelecter === 2) {
-				this.endTime = e.result;
-			}
+		// change: function(e) {
+		// 	if (this.timeSelecter === 1) {
+		// 		this.startTime = e.result;
+		// 	} else if (this.timeSelecter === 2) {
+		// 		this.endTime = e.result;
+		// 	}
+		// },
+		getDestroyUserList() {
+			destroyUserList().then(res => {
+				let { code, data, msg } = res.data;
+				if (code === 200) {
+					this.destroyUserList = data;
+				} else {
+					uni.showToast({
+						title: msg,
+						icon: "none"
+					});
+				}
+			});
 		},
 		handleScan() {
 			uni.scanCode({
 				success: res => {
-          console.log(res);
-          console.log(typeof(res.result))
+					console.log(res);
+					console.log(typeof res.result);
 					if (this.scanCode.indexOf(res.result) >= 0) {
 						uni.showToast({
 							title: "已扫描此码",
@@ -158,9 +191,9 @@ export default {
 						});
 					}
 				},
-        fail: res=>{
-          console.log(res)
-        }
+				fail: res => {
+					console.log(res);
+				}
 			});
 		},
 		getDetails() {
@@ -179,6 +212,10 @@ export default {
 						this.qrCodePackageId = data.qrCodePackageId;
 						this.workOperations = data.workOperations;
 						uni.hideLoading();
+
+						if (this.basicInfo.status == 6) {
+							this.getDestroyUserList();
+						}
 					}
 				})
 				.catch(() => {
@@ -242,7 +279,10 @@ export default {
 			}
 		},
 		handleSubmit() {
-			if (this.scanCode.length !== this.qrCodePackageId.length) {
+			if (
+				this.basicInfo.status != 3 &&
+				this.scanCode.length !== this.qrCodePackageId.length
+			) {
 				uni.showToast({
 					title: "请先扫码确认子包",
 					icon: "error",
@@ -252,7 +292,7 @@ export default {
 			}
 			let data = {
 				workId: this.workId,
-				suggestTime: "00:" + this.startTime,
+				// suggestTime: "00:" + this.startTime,
 				remark: this.remark,
 				qrCodeIds: this.qrCodePackageId,
 				filePathMapList: this.uploadImages.concat(this.uploadVideos)
@@ -260,6 +300,9 @@ export default {
 			if (this.basicInfo.status == 3) {
 				data.destroyNow = this.destroyNow ? 1 : 0;
 				data.weight = this.weight;
+			}
+			if (this.basicInfo.status == 6) {
+				data.destroyUsers = this.destroyUsers.join(",");
 			}
 			uni.showLoading({
 				title: "加载中",
@@ -349,6 +392,11 @@ export default {
 			gap: 20rpx;
 			margin-top: 10rpx;
 		}
+	}
+
+	.subtitle {
+		font-size: 28rpx;
+		color: #333333;
 	}
 }
 </style>
