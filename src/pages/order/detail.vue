@@ -281,8 +281,8 @@ export default {
 							orderId: this.info.id,
 							handleUserId: this.handlerList[this.handlerIndex].id,
 							carNum: this.plateList[this.plateIndex].carNum,
-							driver: this.driverList[this.driverIndex].id,
-							porters: this.porters.join(",")
+							driverUserId: this.driverList[this.driverIndex].id,
+							porterUserIds: this.porters.join(",")
 						}).then(res => {
 							let { code, msg } = res.data;
 							if (code === 200) {
