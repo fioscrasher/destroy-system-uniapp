@@ -73,7 +73,7 @@
 					style="margin-top: 10rpx;"
 				></uni-easyinput>
 				<view class="switch">
-					<switch :checked="destroyNow" @change="" />
+					<switch :checked="destroyNow" @change="handleSwitchChange" />
 					<text>是否直接销毁</text>
 				</view>
 			</template>
