@@ -33,6 +33,10 @@ export const upload = data => {
 	return uploader("/blade-resource/oss/endpoint/put-file", data);
 };
 
+export const uploadVideo = (file, data) => {
+	return uploader("/blade-resource/oss/endpoint/uploadVideo", file, data);
+};
+
 export const destroyUserList = params => {
 	return request({
 		url: "/blade-user/getDestroyUsers",

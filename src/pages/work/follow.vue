@@ -27,6 +27,14 @@
 				<view class="follow-info-content-item">
 					<text>操作员：{{ basicInfo.handleUsername }}</text>
 				</view>
+				<template v-if="activeSteps == 1">
+					<view class="follow-info-content-item">
+						<text>司机：{{ basicInfo.driver }}</text>
+					</view>
+					<view class="follow-info-content-item">
+						<text>搬运员：{{ basicInfo.porters }}</text>
+					</view>
+				</template>
 				<view class="follow-info-content-item">
 					<text>车牌号：{{ basicInfo.carNum }}</text>
 				</view>

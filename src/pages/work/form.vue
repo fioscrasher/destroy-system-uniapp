@@ -113,6 +113,7 @@ import htzImageUpload from "@/components/htz-image-upload/htz-image-upload.vue";
 import {
 	followDetail,
 	upload,
+	uploadVideo,
 	followSubmit,
 	destroyUserList
 } from "@/api/work";
@@ -254,30 +255,57 @@ export default {
 				});
 		},
 		handleUpload(e, type) {
-			for (let i = 0; i < e.length; i++) {
-				const file = e[i];
-				uni.showLoading({
-					title: `正在上传第${i + 1}个文件`,
-					mask: true
-				});
-				upload(file).then(res => {
-					let { data, code } = res;
-					if (code === 200) {
-						this.fileList.push(data.link);
-						this.uploadFiles.push({
-							url: data.link,
-							type: type == 1 ? "video" : "img"
-						});
-						uni.hideLoading();
-					} else {
-						uni.hideLoading();
-						uni.showToast({
-							title: "上传出错",
-							icon: "error",
-							mask: true
-						});
-					}
-				});
+			if (type == 1) {
+				for (let i = 0; i < e.length; i++) {
+					const file = e[i];
+					uni.showLoading({
+						title: `正在上传第${i + 1}个文件`,
+						mask: true
+					});
+					uploadVideo(file, {
+						workId: this.workId,
+						status: this.basicInfo.status
+					}).then(res => {
+						let { data, code } = res;
+						if (code === 200) {
+							this.fileList.push(data.filePath);
+							uni.hideLoading();
+						} else {
+							uni.hideLoading();
+							uni.showToast({
+								title: "上传出错",
+								icon: "error",
+								mask: true
+							});
+						}
+					});
+				}
+			} else {
+				for (let i = 0; i < e.length; i++) {
+					const file = e[i];
+					uni.showLoading({
+						title: `正在上传第${i + 1}个文件`,
+						mask: true
+					});
+					upload(file).then(res => {
+						let { data, code } = res;
+						if (code === 200) {
+							this.fileList.push(data.link);
+							this.uploadFiles.push({
+								url: data.link,
+								type: "img"
+							});
+							uni.hideLoading();
+						} else {
+							uni.hideLoading();
+							uni.showToast({
+								title: "上传出错",
+								icon: "error",
+								mask: true
+							});
+						}
+					});
+				}
 			}
 		},
 		handleDelete(e) {
