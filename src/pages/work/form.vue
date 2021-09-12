@@ -5,7 +5,7 @@
 			:extra="'需确认数量：' + qrCodePackageId.length"
 			note="true"
 			:isFull="true"
-			v-if="basicInfo.status != 3"
+			v-if="basicInfo.status != 2 && basicInfo.status != 3"
 		>
 			<view class="follow-package">
 				<text class="tips" v-if="qrCodePackageId.length === 0"
@@ -20,6 +20,24 @@
 			</view>
 			<template v-slot:footer>
 				<view class="follow-package-footer">
+					<template v-if="basicInfo.status == 1">
+						<tui-button
+							style="margin-right: 20rpx;"
+							:size="24"
+							height="42rpx"
+							width="90rpx"
+							@click="toPrint"
+							>打印</tui-button
+						>
+						<tui-button
+							style="margin-right: 20rpx;"
+							:size="24"
+							height="42rpx"
+							width="180rpx"
+							@click="handleAdd"
+							>生成打包记录</tui-button
+						>
+					</template>
 					<tui-button
 						:size="24"
 						height="42rpx"
@@ -31,27 +49,13 @@
 			</template>
 		</uni-card>
 		<view class="follow-form">
-			<uni-file-picker
-				v-model="uploadImages"
-				file-mediatype="image"
-				mode="grid"
-				file-extname="png,jpg"
-				:limit="9"
-				@select="handleUploadImage"
-				:image-styles="imageStyle"
-				title="上传图片"
-				:auto-upload="true"
-			/>
-			<uni-file-picker
-				v-model="uploadVideos"
-				file-mediatype="video"
-				mode="grid"
-				file-extname="mp4,avi"
-				:limit="3"
-				@select="handleUploadVideo"
-				title="上传视频"
-				:auto-upload="true"
-			/>
+			<htz-image-upload
+				mediaType="all"
+				:max="3"
+				v-model="fileList"
+				@chooseSuccess="handleUpload"
+				@imgDelete="handleDelete"
+			></htz-image-upload>
 			<!-- <view class="follow-form-time">
 				<tui-button type="white" :size="28" @click="handleTimeShow(1)"
 					>视频剪辑时间：{{ startTime }}</tui-button
@@ -105,15 +109,19 @@
 </template>
 
 <script>
+import htzImageUpload from "@/components/htz-image-upload/htz-image-upload.vue";
 import {
 	followDetail,
 	upload,
 	followSubmit,
 	destroyUserList
 } from "@/api/work";
+import { add } from "@/api/package";
 
 export default {
-	components: {},
+	components: {
+		htzImageUpload
+	},
 	data: () => ({
 		workId: null,
 		itemList: [{ text: "提交" }],
@@ -125,8 +133,8 @@ export default {
 			height: 80,
 			width: 80
 		},
-		uploadImages: [],
-		uploadVideos: [],
+		fileList: [],
+		uploadFiles: [],
 		// startTime: "00:00",
 		// endTime: "00:00",
 		timeSelecter: null,
@@ -140,6 +148,11 @@ export default {
 	}),
 	computed: {},
 	methods: {
+		toPrint() {
+			uni.navigateTo({
+				url: `/pages/qrcode/print?id=${this.workId}`
+			});
+		},
 		handleSwitchChange({ detail }) {
 			this.destroyNow = detail.value;
 		},
@@ -196,6 +209,25 @@ export default {
 				}
 			});
 		},
+		handleAdd() {
+			add({
+				workId: this.workId
+			}).then(res => {
+				let { code, msg } = res.data;
+				if (code === 200) {
+					uni.showToast({
+						title: "生成子包成功！",
+						icon: "success"
+					});
+					this.getDetails();
+				} else {
+					uni.showToast({
+						title: msg,
+						icon: "error"
+					});
+				}
+			});
+		},
 		getDetails() {
 			uni.showLoading({
 				title: "加载中"
@@ -212,7 +244,6 @@ export default {
 						this.qrCodePackageId = data.qrCodePackageId;
 						this.workOperations = data.workOperations;
 						uni.hideLoading();
-
 						if (this.basicInfo.status == 6) {
 							this.getDestroyUserList();
 						}
@@ -222,21 +253,20 @@ export default {
 					uni.hideLoading();
 				});
 		},
-		handleUploadImage(e) {
-			for (let i = 0; i < e.tempFiles.length; i++) {
-				const file = e.tempFiles[i];
+		handleUpload(e, type) {
+			for (let i = 0; i < e.length; i++) {
+				const file = e[i];
 				uni.showLoading({
 					title: `正在上传第${i + 1}个文件`,
 					mask: true
 				});
-				upload(file.path).then(res => {
+				upload(file).then(res => {
 					let { data, code } = res;
 					if (code === 200) {
-						this.uploadImages.push({
-							name: file.name,
-							extname: file.extname,
+						this.fileList.push(data.link);
+						this.uploadFiles.push({
 							url: data.link,
-							type: "img"
+							type: type == 1 ? "video" : "img"
 						});
 						uni.hideLoading();
 					} else {
@@ -250,36 +280,21 @@ export default {
 				});
 			}
 		},
-		handleUploadVideo(e) {
-			for (let i = 0; i < e.tempFiles.length; i++) {
-				const file = e.tempFiles[i];
-				uni.showLoading({
-					title: `正在上传第${i + 1}个文件`,
-					mask: true
-				});
-				upload(file.path).then(res => {
-					let { data, code } = res;
-					if (code === 200) {
-						this.uploadVideos.push({
-							name: file.name,
-							extname: file.extname,
-							url: data.link,
-							type: "video"
-						});
-						uni.hideLoading();
-					} else {
-						uni.hideLoading();
-						uni.showToast({
-							title: "上传出错",
-							icon: "error",
-							mask: true
-						});
-					}
-				});
+		handleDelete(e) {
+			for (let i = 0; i < this.uploadFiles.length; i++) {
+				const item = this.uploadFiles[i];
+				if (item.url == e.del) {
+					let temp = [...this.uploadFiles];
+					temp.splice(i, 1);
+					this.uploadFiles = temp;
+					break;
+				}
 			}
 		},
 		handleSubmit() {
+			console.log(this.uploadFiles);
 			if (
+				this.basicInfo.status != 2 &&
 				this.basicInfo.status != 3 &&
 				this.scanCode.length !== this.qrCodePackageId.length
 			) {
@@ -295,7 +310,7 @@ export default {
 				// suggestTime: "00:" + this.startTime,
 				remark: this.remark,
 				qrCodeIds: this.qrCodePackageId,
-				filePathMapList: this.uploadImages.concat(this.uploadVideos)
+				filePathMapList: this.uploadFiles
 			};
 			if (this.basicInfo.status == 3) {
 				data.destroyNow = this.destroyNow ? 1 : 0;

@@ -91,7 +91,7 @@ export default {
 				value: 1
 			},
 			{
-				title: "搬运",
+				title: "运输",
 				value: 2
 			},
 			{

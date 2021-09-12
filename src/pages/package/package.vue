@@ -107,7 +107,7 @@ export default {
 							item.tag = "上门打包";
 							break;
 						case 2:
-							item.tag = "搬运";
+							item.tag = "运输";
 							break;
 						case 3:
 							item.tag = "过磅卸车";
