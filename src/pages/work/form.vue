@@ -51,10 +51,11 @@
 		<view class="follow-form">
 			<htz-image-upload
 				mediaType="all"
-				:max="3"
+				:max="9"
 				v-model="fileList"
 				@chooseSuccess="handleUpload"
 				@imgDelete="handleDelete"
+				:remove="false"
 			></htz-image-upload>
 			<!-- <view class="follow-form-time">
 				<tui-button type="white" :size="28" @click="handleTimeShow(1)"
@@ -244,6 +245,14 @@ export default {
 						this.basicInfo = data.workBaseInfoVO;
 						this.qrCodePackageId = data.qrCodePackageId;
 						this.workOperations = data.workOperations;
+						let temp = [];
+						this.workOperations.forEach(item => {
+							if (item.type == 2) {
+								temp.push(item.filePath);
+							}
+						});
+						this.fileList = temp;
+
 						uni.hideLoading();
 						if (this.basicInfo.status == 6) {
 							this.getDestroyUserList();

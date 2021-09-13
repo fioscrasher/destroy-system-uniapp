@@ -13,7 +13,7 @@ import { baseUrl } from "@/config/env";
 axios.defaults.baseURL = baseUrl;
 
 //默认超时时间
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 40000;
 //返回其他状态码
 axios.defaults.validateStatus = function(status) {
 	return status >= 200 && status <= 500;
