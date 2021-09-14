@@ -4,6 +4,7 @@
 			<tui-steps
 				:items="items"
 				:titleSize="24"
+        :descSize="18"
 				:activeSteps="activeSteps"
 				@click="handleStepClick"
 			></tui-steps>
@@ -96,31 +97,38 @@ export default {
 		items: [
 			{
 				title: "上门打包",
-				value: 1
+				value: 1,
+				name: "house"
 			},
 			{
 				title: "运输",
-				value: 2
+				value: 2,
+				name: "transport"
 			},
 			{
 				title: "过磅卸车",
-				value: 3
+				value: 3,
+				name: "unreceive"
 			},
 			{
 				title: "入库",
-				value: 4
+				value: 4,
+				name: "home"
 			},
 			{
 				title: "出库",
-				value: 5
+				value: 5,
+				name: "home"
 			},
 			{
 				title: "销毁",
-				value: 6
+				value: 6,
+				name: "nodata"
 			},
 			{
 				title: "已完成",
-				value: 7
+				value: 7,
+				name: "circle-selected"
 			}
 		],
 		activeSteps: 1,
@@ -197,6 +205,9 @@ export default {
 						this.items.forEach((item, index) => {
 							if (item.value == this.basicInfo.status) {
 								this.activeSteps = index;
+								this.items[index].desc = "当前步骤";
+							} else {
+								this.items[index].desc = "";
 							}
 						});
 						uni.hideLoading();
@@ -219,6 +230,9 @@ export default {
 			if (item.value == option.status) {
 				this.activeSteps = index;
 				this.index = index;
+				this.items[index].desc = "当前步骤";
+			} else {
+				this.items[index].desc = "";
 			}
 		});
 		this.status = option.status;

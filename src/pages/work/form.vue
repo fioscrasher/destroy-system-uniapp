@@ -245,13 +245,16 @@ export default {
 						this.basicInfo = data.workBaseInfoVO;
 						this.qrCodePackageId = data.qrCodePackageId;
 						this.workOperations = data.workOperations;
-						let temp = [];
-						this.workOperations.forEach(item => {
-							if (item.type == 2) {
-								temp.push(item.filePath);
-							}
-						});
-						this.fileList = temp;
+
+						if (this.basicInfo.status == 1) {
+							let temp = [];
+							this.workOperations.forEach(item => {
+								if (item.type == 2) {
+									temp.push(item.filePath);
+								}
+							});
+							this.fileList = temp;
+						}
 
 						uni.hideLoading();
 						if (this.basicInfo.status == 6) {
