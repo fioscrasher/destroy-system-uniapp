@@ -59,14 +59,14 @@ export default {
 						success: res => {
 							console.log("position success：", res);
 							let arr = this.$store.state.device.positionData;
-							if (arr.length > 0)
-								if (
-									arr[arr.length - 1].longitude == res.longitude &&
-									arr[arr.length - 1].latitude == res.latitude
-								) {
-									return false;
-								}
-							if (arr.length >= 6) {
+							// if (arr.length > 0)
+							// 	if (
+							// 		arr[arr.length - 1].longitude == res.longitude &&
+							// 		arr[arr.length - 1].latitude == res.latitude
+							// 	) {
+							// 		return false;
+							// 	}
+							if (arr.length >= 2) {
 								this.uploadPosition(arr);
 								arr = [];
 							}
@@ -83,7 +83,7 @@ export default {
 						this.$store.commit("SET_POSITION_DATA", []);
 					}
 				}
-			}, 15000);
+			}, 30000);
 		},
 		uploadPosition(arr) {
 			let temp = [];

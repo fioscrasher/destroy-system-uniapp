@@ -19,3 +19,19 @@ export const getPosition = (current, size, params) => {
 		}
 	});
 };
+
+export const getUsers = params => {
+	return request({
+		url: "/blade-user/getInternalPersons",
+		method: "get",
+		params
+	});
+};
+
+export const getLocation = params => {
+	return request({
+		url: "/location/getLatestLocationByUserId",
+		method: "get",
+		params
+	});
+};
