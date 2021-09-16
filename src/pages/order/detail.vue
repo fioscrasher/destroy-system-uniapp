@@ -39,7 +39,10 @@
 					<template v-else-if="info.estimateWeight === 3">3吨以上</template>
 				</view>
 				<view class="order-info-item">
-					<text>预估价格：{{ info.estimatePrice }}元</text>
+					<text
+						>预估价格：暂不收费
+						<!-- {{ info.estimatePrice }}元 -->
+					</text>
 				</view>
 
 				<tui-divider :height="20"></tui-divider>
@@ -53,7 +56,7 @@
 					<text>上门电话：{{ info.phone }}</text>
 				</view>
 				<view class="order-info-item">
-					<text>预约时间：{{ info.appointmentTime }}</text>
+					<text>预约上门时间：{{ info.appointmentTime }}</text>
 				</view>
 				<view class="order-info-item">
 					<text>下单时间：{{ info.createTime }}</text>
