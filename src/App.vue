@@ -66,7 +66,7 @@ export default {
 							// 	) {
 							// 		return false;
 							// 	}
-							if (arr.length >= 2) {
+							if (arr.length >= 1) {
 								this.uploadPosition(arr);
 								arr = [];
 							}

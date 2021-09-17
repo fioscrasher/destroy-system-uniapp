@@ -2,8 +2,8 @@
     "name" : "南环销毁系统",
     "appid" : "__UNI__BAB3133",
     "description" : "南环销毁系统管理人员APP",
-    "versionName" : "1.0.5",
-    "versionCode" : 105,
+    "versionName" : "1.0.6a",
+    "versionCode" : 106,
     "transformPx" : false,
     "app-plus" : {
         /* 5+App特有相关 */

@@ -16,24 +16,24 @@
 			</div>
 		</div>
 		<tui-list-view>
-			<tui-list-cell arrow>关于</tui-list-cell>
+			<!-- <tui-list-cell arrow>关于</tui-list-cell> -->
 			<tui-list-cell arrow>
 				<div class="cache">
-					<text>清理缓存</text>
+					<text>当前缓存大小</text>
 					<text>{{ cacheSize }}</text>
 				</div>
 			</tui-list-cell>
 			<tui-list-cell>
 				<div class="version">
 					<text>版本</text>
-					<text>1.0.0</text>
+					<text>1.0.6a</text>
 				</div>
 			</tui-list-cell>
-			<tui-list-cell arrow>更换密码</tui-list-cell>
-			<tui-list-cell>
+			<!-- <tui-list-cell arrow>更换密码</tui-list-cell> -->
+			<tui-list-cell @click="phoneCall">
 				<div class="version">
 					<text>联系管理员</text>
-					<text>020-0288-0288</text>
+					<text>020-83706783</text>
 				</div>
 			</tui-list-cell>
 			<tui-list-cell>
@@ -71,6 +71,11 @@ export default {
 			} else {
 				this.cacheSize = parseInt(res.currentSize / 1024) + " MB";
 			}
+		},
+		phoneCall() {
+			uni.makePhoneCall({
+				phoneNumber: "02083706783"
+			});
 		}
 	},
 	watch: {},
