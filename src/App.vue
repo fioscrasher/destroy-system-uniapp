@@ -101,7 +101,7 @@ export default {
 				})
 				.catch(() => {
 					uni.showToast({
-						title: "定位出错，请重新打开首页定位开关后再尝试",
+						title: "定位提交出错，已停止定位",
 						icon: "none",
 						mask: true
 					});
@@ -127,5 +127,8 @@ body {
 }
 .tui-bottom-navigation {
 	z-index: 995 !important;
+}
+.uni-tabbar__label {
+	font-weight: bold;
 }
 </style>

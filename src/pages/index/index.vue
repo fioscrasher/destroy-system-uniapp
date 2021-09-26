@@ -97,7 +97,7 @@ export default {
 				},
 				{
 					name: "打包管理",
-					icon: "/static/icon/index/icon_work.png",
+					icon: "/static/icon/index/icon_package.png",
 					color: "#fe735c",
 					url: "/pages/package/package"
 				},
@@ -160,6 +160,11 @@ export default {
 		this.getStatusCount();
 		this.gpsSwitch = this.$store.state.device.positionAvailable;
 	},
+	watch: {
+		"$store.state.device.positionAvailable": function() {
+			this.gpsSwitch = this.$store.state.device.positionAvailable;
+		}
+	},
 	computed: {
 		...mapState({
 			userInfo: state => state.user.userInfo
@@ -168,7 +173,7 @@ export default {
 	methods: {
 		gpsSwitchChange({ detail }) {
 			this.gpsSwitch = detail.value;
-      this.$store.commit("SET_POSITION_AVAILABLE", detail.value);
+			this.$store.commit("SET_POSITION_AVAILABLE", detail.value);
 		},
 		getStatusCount() {
 			apiStatusCount().then(res => {
@@ -193,7 +198,7 @@ export default {
 .index-wrap {
 	position: relative;
 	background-color: #fff;
-	box-shadow: 0 0 5px #ccc;
+	box-shadow: 0 5rpx 15rpx rgba(0, 0, 0, 0.3);
 	padding-bottom: 40rpx;
 
 	.title-image {
@@ -221,8 +226,8 @@ export default {
 			margin-top: 52rpx;
 			width: 100%;
 			background-color: #ffffff;
-			border-radius: 18rpx;
-			box-shadow: 0 0 10rpx #cccccc;
+			border-radius: 10rpx;
+			box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3);
 			.content {
 				height: 180rpx;
 				display: flex;
@@ -246,12 +251,13 @@ export default {
 			margin-top: 20rpx;
 			width: 100%;
 			background-color: #ffffff;
-			border-radius: 18rpx;
-			box-shadow: 0 0 10rpx #cccccc;
+			border-radius: 10rpx;
+			box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3);
 			overflow: hidden;
 			.icon-panel {
 				display: flex;
 				flex-wrap: wrap;
+        margin-bottom: 10rpx;
 				.icon-item {
 					height: 144rpx;
 					width: 25%;
@@ -272,8 +278,8 @@ export default {
 						border-radius: 12rpx;
 						margin-bottom: 14rpx;
 						image {
-							width: 36rpx;
-							height: 36rpx;
+							width: 42rpx;
+							height: 42rpx;
 						}
 					}
 					.text {
@@ -289,8 +295,8 @@ export default {
 			width: 100%;
 			background-color: #268efb;
 			height: 88rpx;
-			border-radius: 18rpx;
-			box-shadow: 0 0 10rpx #268efb;
+			border-radius: 10rpx;
+			box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3);
 			overflow: hidden;
 			display: flex;
 			align-items: center;

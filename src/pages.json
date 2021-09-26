@@ -146,10 +146,10 @@
     }
   ],
   "tabBar": {
-    "color": "#949494",
-    "selectedColor": "#268dfb",
-    "borderStyle": "black",
-    "backgroundColor": "#ffffff",
+    "color": "#ffffff99",
+    "selectedColor": "#ffffff",
+    "borderStyle": "white",
+    "backgroundColor": "#268efb",
     "fontSize": "14px",
     "iconWidth": "20px",
     "height": "60px",
@@ -169,8 +169,8 @@
       {
         "pagePath": "pages/work/work",
         "text": "工单",
-        "iconPath": "static/icon/tabbar/icon_scan_off.png",
-        "selectedIconPath": "static/icon/tabbar/icon_scan_on.png"
+        "iconPath": "static/icon/tabbar/icon_work_off.png",
+        "selectedIconPath": "static/icon/tabbar/icon_work_on.png"
       },
       {
         "pagePath": "pages/user/user",

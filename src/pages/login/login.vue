@@ -1,6 +1,6 @@
 <template>
 	<div class="login-wrap">
-		<image src="/static/images/user_default.png" class="title-image" />
+		<image src="/static/images/logo.jpg" class="title-image" />
 		<view class="form-wrap">
 			<view class="username form-wrap-item">
 				<tui-icon name="people" color="#ffffff"></tui-icon>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-const form = require("thorui-uni/lib/common/tui-validation/tui-validation.js");
+import tuiform from "thorui-uni/lib/common/tui-validation/tui-validation.js";
 import { getCaptcha } from "@/api/user";
 
 export default {
@@ -86,7 +86,7 @@ export default {
 				name: "password",
 				rule: ["required"],
 				msg: ["请输入密码"]
-			},
+			}
 			// {
 			// 	name: "code",
 			// 	rule: ["required"],
@@ -104,8 +104,7 @@ export default {
 			});
 		},
 		handleLogin() {
-			let checkRes = form.validation(this.loginForm, this.rules);
-			console.log(checkRes);
+			let checkRes = tuiform.validation(this.loginForm, this.rules);
 			if (!checkRes) {
 				this.loading = true;
 				this.$store
@@ -163,6 +162,8 @@ export default {
 	width: 100%;
 	height: 100vh;
 	background-color: #268efb;
+	background-image: url("/static/images/login-background.jpg");
+	background-size: 100% 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -171,6 +172,8 @@ export default {
 	.title-image {
 		width: 280rpx;
 		height: 280rpx;
+		border-radius: 20rpx;
+		opacity: .9;
 	}
 	.form-wrap {
 		width: 80%;
