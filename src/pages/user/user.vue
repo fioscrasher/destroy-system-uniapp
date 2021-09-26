@@ -26,7 +26,7 @@
 			<tui-list-cell>
 				<div class="version">
 					<text>版本</text>
-					<text>1.0.6a</text>
+					<text>1.1.0</text>
 				</div>
 			</tui-list-cell>
 			<!-- <tui-list-cell arrow>更换密码</tui-list-cell> -->
